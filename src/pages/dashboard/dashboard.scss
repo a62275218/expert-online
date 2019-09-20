@@ -1,0 +1,44 @@
+.top-left {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  font-size: 40px;
+  color: #fff;
+}
+
+.top-right {
+  position: absolute;
+  right: 40px;
+  top: 30px;
+  color: #fff;
+  font-size: 28px;
+  text-align: right;
+}
+
+.section {
+  .title {
+    color: #2F8CCB;
+    font-size: 40px;
+    font-weight: 200;
+    padding: 20px 0 0 60px;
+  }
+  .row {
+    margin: 30px 20px;
+    color: #2F8CCB;
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.16);
+    border-radius: 20px;
+    padding: 30px 36px;
+    font-size:28px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.gap{
+  height:40px;
+}
+
+.bottom-img{
+  margin:-20px 0 -10px 0;
+}

@@ -1,9 +1,5 @@
-import { ComponentClass } from 'react'
-import Taro, { Component, Config } from '@tarojs/taro'
+import Taro, { useState } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-
-import { add, minus, asyncAdd } from '../../actions/counter'
 
 import './index.scss'
 
@@ -17,72 +13,80 @@ import './index.scss'
 //
 // #endregion
 
-type PageStateProps = {
-  counter: {
-    num: number
-  }
-}
+Taro.setNavigationBarTitle({
+  title:'个人中心'
+})
 
-type PageDispatchProps = {
-  add: () => void
-  dec: () => void
-  asyncAdd: () => any
-}
-
-type PageOwnProps = {}
-
-type PageState = {}
-
-type IProps = PageStateProps & PageDispatchProps & PageOwnProps
-
-interface Index {
-  props: IProps;
-}
-
-@connect(({ counter }) => ({
-  counter
-}), (dispatch) => ({
-  add () {
-    dispatch(add())
-  },
-  dec () {
-    dispatch(minus())
-  },
-  asyncAdd () {
-    dispatch(asyncAdd())
-  }
-}))
-class Index extends Component {
-
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
-    navigationBarTitleText: '个人中心'
-  }
-
-  componentWillReceiveProps (nextProps) {
-    console.log(this.props, nextProps)
-  }
-
-  componentWillUnmount () { }
-
-  componentDidShow () { }
-
-  componentDidHide () { }
-
-  render () {
-    return (
-      <View>
-        <Image src='../../images/Group.png' mode="widthFix" style="width:100%;"></Image>
+function Index (){
+  const [num,lock] = useState(3);
+  return (
+    <View>
+      <Image src='../../images/Group.png' mode="widthFix" style="width:100%;"></Image>
+      <View className="top-left">你好，欢迎登入!</View>
+      <View className="top-right">
+        <View>
+          林榕
+        </View>
+        <View>
+          linrong123@qq.com
+        </View>
       </View>
-    )
-  }
+      <View className="section-title">
+        我的课程
+      </View>
+      <View>
+        {num} {lock}
+      </View> 
+    </View>
+  )
 }
+// class Index extends Component {
+
+//   /**
+//  * 指定config的类型声明为: Taro.Config
+//  *
+//  * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+//  * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+//  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+//  */
+//   config: Config = {
+//     navigationBarTitleText: '个人中心'
+//   }
+
+  
+ 
+//   componentWillReceiveProps(nextProps) {
+//     console.log(this.props, nextProps)
+//   }
+
+//   componentWillUnmount() { }
+
+//   componentDidShow() { }
+
+//   componentDidHide() { }
+
+//   render() {
+//     return (
+//       <View>
+//         <Image src='../../images/Group.png' mode="widthFix" style="width:100%;"></Image>
+//         <View className="top-left">你好，欢迎登入!</View>
+//         <View className="top-right">
+//           <View>
+//             林榕
+//           </View>
+//           <View>
+//             linrong123@qq.com
+//           </View>
+//         </View>
+//         <View className="section-title">
+//           我的课程
+//         </View>
+//         <View>
+//         </View> 
+//       </View>
+//     )
+//   }
+// }
 
 // #region 导出注意
 //
@@ -91,4 +95,4 @@ class Index extends Component {
 //
 // #endregion
 
-export default Index as ComponentClass<PageOwnProps, PageState>
+export default Index

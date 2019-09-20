@@ -1,10 +1,9 @@
 import '@tarojs/async-await'
-import Taro, { Component, Config } from '@tarojs/taro'
-import { Provider } from '@tarojs/redux'
+import Taro, { Component, Config, } from '@tarojs/taro'
 
 import Index from './pages/index'
-
-import configStore from './store'
+import Dashboard from './pages/dashboard/dashboard'
+import GlobalContext, { globalState } from './context'
 
 import './app.scss'
 
@@ -13,8 +12,6 @@ import './app.scss'
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 //   require('nerv-devtools')
 // }
-
-const store = configStore()
 
 class App extends Component {
 
@@ -27,31 +24,35 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index'
+      'pages/index/index',
+      'pages/dashboard/dashboard',
+      'pages/login/login'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
+      navigationBarTitleText: 'Expert Online Training',
       navigationBarTextStyle: 'black'
     }
   }
 
-  componentDidMount () {}
 
-  componentDidShow () {}
+  componentDidMount() { }
 
-  componentDidHide () {}
+  componentDidShow() { }
 
-  componentDidCatchError () {}
+  componentDidHide() { }
+
+  componentDidCatchError() { }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
-  render () {
+  render() {
     return (
-      <Provider store={store}>
-        <Index />
-      </Provider>
+      <GlobalContext.Provider value={globalState}>
+          <Index />
+          <Dashboard />
+      </GlobalContext.Provider>
     )
   }
 }
