@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"projectname": "expert-online",
 	"description": "",
-	"appid": "touristappid",
+	"appid": "wx4520b7bd471bfe8c",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
