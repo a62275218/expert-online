@@ -1,3 +1,18 @@
-page{
-    background:#F8F8F8
+page {
+  height: 100%;
+  background: #f8f8f8;
+}
+
+.bg {
+  height: 100%;
+  background: #f8f8f8;
+}
+
+.bottom-img {
+  margin: -20px 0 -10px 0;
+}
+
+.fix-bot {
+  position: absolute;
+  bottom: 0;
 }

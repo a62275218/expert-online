@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Input } from "@tarojs/components";
-import topImg from "../../images/Group.png";
+import topImg from "../../images/B-6-BG.png";
 import titleImg from "../../images/EOT-Clear.png";
 
 import "./login.scss";
@@ -10,7 +10,7 @@ import Footer from "../../components/footer";
 class Login extends Component {
   render() {
     return (
-      <View>
+      <View className="bg">
         <Image src={topImg} mode="widthFix" style="width:100%;"></Image>
         <Image src={titleImg} mode="widthFix" className="title-img"></Image>
         <View className="login">
@@ -27,9 +27,9 @@ class Login extends Component {
           <View className="login-btn">登入</View>
           <View className="bot-text">还不是会员吗？按这里来购买会员唷</View>
         </View>
-        <Footer></Footer>
+        <Footer fixed></Footer>
         <Image
-          className="bottom-img"
+          className="bottom-img fix-bot"
           src={botImg}
           mode="widthFix"
           style="width:100%;"

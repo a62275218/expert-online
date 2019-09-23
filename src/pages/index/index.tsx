@@ -20,7 +20,7 @@ Taro.setNavigationBarTitle({
 function Index (){
   const [num,lock] = useState(3);
   return (
-    <View>
+    <View className="bg">
       <Image src='../../images/Group.png' mode="widthFix" style="width:100%;"></Image>
       <View className="top-left">你好，欢迎登入!</View>
       <View className="top-right">
