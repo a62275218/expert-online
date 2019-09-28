@@ -26,7 +26,8 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/dashboard/dashboard',
-      'pages/login/login'
+      'pages/login/login',
+      'pages/purchaseMember/purchaseMember'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -51,7 +52,6 @@ class App extends Component {
     return (
       <GlobalContext.Provider value={globalState}>
           <Index />
-          <Dashboard />
       </GlobalContext.Provider>
     )
   }
