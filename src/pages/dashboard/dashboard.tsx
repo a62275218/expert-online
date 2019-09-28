@@ -1,6 +1,6 @@
 import Taro, { useState, Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import Footer from '../../components/footer';
+import Footer from '../../components/footer/footer';
 import GlobalContext from '../../context'
 import nextIcon from '../../images/next-icon.png'
 import topImg from '../../images/Group.png'
