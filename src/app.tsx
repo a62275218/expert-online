@@ -27,7 +27,8 @@ class App extends Component {
       'pages/index/index',
       'pages/dashboard/dashboard',
       'pages/login/login',
-      'pages/purchaseMember/purchaseMember'
+      'pages/purchaseMember/purchaseMember',
+      'pages/intro/intro'
     ],
     window: {
       backgroundTextStyle: 'light',

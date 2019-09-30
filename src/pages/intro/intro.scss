@@ -1,0 +1,87 @@
+@import "../../common/mixin.scss";
+
+.wrapper{
+    padding:40px 80px;
+    z-index:100;
+}
+
+.article{
+    font-family: PingFangSC-Light;
+    font-size:28px;
+    padding-top:40px;
+    
+    text{
+        font-weight:bold;
+        color: #1D1D1D;
+    }
+}
+
+.white-card{
+    color:#2F8CCB;
+    padding:40px 20px;
+    margin-top:40px;
+    width:100%;
+    @include card;
+    .card-title{
+        text-align: center;
+        text{
+            font-weight:bold;
+        }
+    }
+    .one-year{
+        width:50px;
+        margin:40px auto 10px;
+        position: relative;
+        .number{
+            font-size:40px;
+        }
+        .year{
+            text-align: right;
+            font-size:26px;
+        }
+        &:after{
+            content:'';
+            position: absolute;
+            top:46px;
+            left:-12px;
+            display:block;
+            width:80px;
+            height:2px;
+            transform:rotate(-45deg);
+            border-bottom:1px solid #2F8CCB;
+        }
+    }
+    .title{
+        text {
+            font-size:20px;
+            font-weight:400
+        }
+    }
+    .feature-row{
+        height:170px;
+        position: relative;
+        margin-top:70px;
+        .feature-row-expand{
+            position: absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-50%);
+            width:114%;
+            display:flex;
+            justify-content: space-between;
+            .feature{
+                display:flex;
+                flex-direction: column;
+                justify-content: space-between;
+                box-sizing: border-box;
+                width:190px;
+                height:190px;
+                padding:20px;            
+                .num{
+                    font-size:70px;
+                    font-weight:450;
+                }
+            }
+        }
+    }
+}
