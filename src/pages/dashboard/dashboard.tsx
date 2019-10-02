@@ -9,37 +9,43 @@ import botImg from '../../images/C-BG2.png'
 import './dashboard.scss'
 
 class Dashboard extends Component {
-  static contextType = GlobalContext
+  static contextType = GlobalContext;
 
   render() {
+    Taro.setNavigationBarTitle({
+      title: "个人中心"
+    });
     const dashboardList = [
       {
         title: '我的课程', list: [
-          { label: '课程1', progress: '28%' }
+          { label: '课程1', progress: '28%', url:'/pages/courseList/courseList' }
         ]
       },
       {
         title: '档案中心', list: [
-          { label: '我的证书', url: '../pages/certification' },
-          { label: '课程材料', url: '../pages/certification' }
+          { label: '我的证书', url: '/pages/my/my' },
+          { label: '课程材料', url: '/pages/my/my' }
         ]
       },
       {
         title: '我的账号', list: [
-          { label: '账号设定', url: '../pages/certification' },
-          { label: '购买记录', url: '../pages/certification' },
-          { label: '帮助', url: '../pages/certification' }
+          { label: '账号设定', url: '/pages/my/my' },
+          { label: '购买记录', url: '/pages/my/my' },
+          { label: '帮助', url: '/pages/courseList/courseList' }
         ]
       }
     ]
     const [list, setList] = useState(dashboardList);
     const { user } = this.context
     const [currentUser,setUser] = useState(user)
-    const changeUser = ()=>{
-      return Object.assign(currentUser,{name:'刘琳'})
+    
+    const goDetail = (item)=>{
+      Taro.navigateTo({
+        url: `${item.url}?title=${item.label}`
+      })
     }
     return (
-      <View style="height:100%;">
+      <View className="background">
         <Image src={topImg} mode="widthFix" style="width:100%;"></Image>
         <View className="top-left">你好，欢迎登入!</View>
         <View className="top-right">
@@ -47,10 +53,10 @@ class Dashboard extends Component {
           <View>linrong123@qq.com</View>
         </View>
         {list.map((item: any, index) => (
-          <View className="section" key={index}>
-            <View className="title">{item.title}</View>
+          <View className="section">
+            <View className="section-title">{item.title}</View>
             {item.list.map((row, idx) =>
-              <View className="row" key={row.label} onClick={() => { setUser(changeUser());console.log(this.context); }}>
+              <View className="row" key={row.label} onClick={() => goDetail(row)}>
                 <View>{row.label}</View>
                 <Image mode="widthFix" style='width:10px' src={nextIcon}></Image>
               </View>)}

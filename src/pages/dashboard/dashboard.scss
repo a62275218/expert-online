@@ -8,6 +8,19 @@
   color: #fff;
 }
 
+.resized-img{
+  width:120%;
+  margin:-5% 0 0 -20%;
+}
+
+.background{
+  height: 100%;
+  background: #f8f8f8;
+  font-family: 'PingFangSC-Medium';
+  overflow:auto;
+  position: relative;
+}
+
 .top-right {
   position: absolute;
   right: 40px;
@@ -17,23 +30,22 @@
   text-align: right;
 }
 
-.section {
-  .title {
-    color: #2F8CCB;
-    font-size: 40px;
-    font-weight: 200;
-    padding: 20px 0 0 60px;
-  }
-  .row {
-    margin: 30px 20px;
-    color: #2F8CCB;
-    @include card;
-    padding: 30px 36px;
-    font-size:28px;
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.row {
+  @include card;
+  padding: 30px 36px;
+  margin: 30px 20px;
+  color: #2F8CCB;
+  font-size:28px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  color: #2F8CCB;
+  font-size: 40px;
+  font-weight: 200;
+  padding-left:60px;
 }
 
 .gap{

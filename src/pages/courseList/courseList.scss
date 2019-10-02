@@ -1,0 +1,11 @@
+@import '../dashboard/dashboard.scss';
+@import '../../common/mixin.scss';
+
+.white-card{
+  @include card;
+}
+
+.finish{
+  background-image: linear-gradient(270deg, #0D50A1 0%, #2F8CCB 100%);
+  color:#fff;
+}

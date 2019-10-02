@@ -1,7 +1,7 @@
 @import "../../common/mixin.scss";
 
 .wrapper{
-    padding:40px 80px;
+    padding:40px 60px;
     z-index:100;
 }
 
@@ -18,9 +18,8 @@
 
 .white-card{
     color:#2F8CCB;
-    padding:40px 20px;
+    padding:40px 30px;
     margin-top:40px;
-    width:100%;
     @include card;
     .card-title{
         text-align: center;
@@ -58,15 +57,14 @@
         }
     }
     .feature-row{
-        height:170px;
+        height:250px;
         position: relative;
-        margin-top:70px;
         .feature-row-expand{
             position: absolute;
-            top:50%;
+            top:0;
             left:50%;
-            transform: translate(-50%,-50%);
-            width:114%;
+            transform: translate(-50%,0);
+            width:120%;
             display:flex;
             justify-content: space-between;
             .feature{
@@ -83,5 +81,8 @@
                 }
             }
         }
+    }
+    .desc-row{
+        padding:10px 0;
     }
 }

@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"projectname": "expert-online",
 	"description": "",
-	"appid": "wx4520b7bd471bfe8c",
+	"appid": "wx1a4b4ceac53ea2fe",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -28,8 +28,12 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
-			"current": 3,
+			"current": 5,
 			"list": [
 				{
 					"id": 0,
@@ -57,6 +61,40 @@
 					"name": "intro",
 					"pathName": "pages/intro/intro",
 					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "register",
+					"pathName": "pages/register/register",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "redeem",
+					"pathName": "pages/redeem/redeem",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "courseList",
+					"pathName": "pages/courseList/courseList",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "courseVideo",
+					"pathName": "pages/courseVideo/courseVideo",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "quiz",
+					"pathName": "pages/quiz/quiz",
 					"scene": null
 				}
 			]

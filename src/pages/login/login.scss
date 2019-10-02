@@ -8,9 +8,10 @@
 
 .login {
   @include card;
-  width:70%;
+  width:80%;
   color: #2F8CCB;
   padding: 50px;
+  margin:20px auto;
 
   .error{
     font-size:26px;
@@ -19,29 +20,7 @@
     margin-top:10px;
   }
 
-  .input {
-    font-size: 26px;
-    border-bottom: 1px solid #2F8CCB;
-    padding-top: 20px;
-    position:relative;
-
-    .eye-icon{
-      width:40px;
-      position:absolute;
-      right:20px;
-      bottom:20px;
-      z-index:100;
-    }
-
-    view{
-      font-weight:520;
-    }
-
-    input {
-      color:#414141;
-      padding: 20px 0;
-    }
-  }
+  
 
   .forgot-psw {
     font-size: 26px;
@@ -55,4 +34,7 @@
     margin-top: 30px;
     font-weight:520;
   }
+}
+
+.bottom-img{
 }

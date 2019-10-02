@@ -1,0 +1,23 @@
+@import "../../common/mixin.scss";
+
+.white-card{
+  @include card;
+  width:90%;
+  color: #2F8CCB;
+  padding: 50px;
+  z-index:100;
+  margin:60px auto;
+  .input-row{
+    display:flex;
+    .input{
+      margin-right:20px;
+    }
+  }
+}
+
+.error{
+  font-size:26px;
+  text-align:right;
+  color:#D0021B;
+  margin-top:10px;
+}

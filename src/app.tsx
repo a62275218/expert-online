@@ -2,7 +2,9 @@ import '@tarojs/async-await'
 import Taro, { Component, Config, } from '@tarojs/taro'
 
 import Index from './pages/index'
+import Login from './pages/login/login'
 import Dashboard from './pages/dashboard/dashboard'
+import My from './pages/my/my'
 import GlobalContext, { globalState } from './context'
 
 import './app.scss'
@@ -24,11 +26,17 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index',
-      'pages/dashboard/dashboard',
+      //'pages/index/index',
       'pages/login/login',
+      'pages/dashboard/dashboard',
       'pages/purchaseMember/purchaseMember',
-      'pages/intro/intro'
+      'pages/intro/intro',
+      'pages/register/register',
+      'pages/redeem/redeem',
+      'pages/courseList/courseList',
+      'pages/courseVideo/courseVideo',
+      'pages/quiz/quiz',
+      'pages/my/my'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -52,7 +60,7 @@ class App extends Component {
   render() {
     return (
       <GlobalContext.Provider value={globalState}>
-          <Index />
+          <Login />
       </GlobalContext.Provider>
     )
   }

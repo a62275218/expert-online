@@ -1,0 +1,62 @@
+@import '../dashboard/dashboard.scss';
+@import '../../common/mixin.scss';
+
+.white-card {
+  @include card;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, .4);
+  right: 20px;
+
+  .top-section {
+
+    display: flex;
+    align-items: center;
+
+    .sec-img {
+      width: 20px;
+      margin: 0 10px;
+    }
+  }
+
+  .active {
+    color: #fff;
+  }
+}
+
+.video-container {
+  @include card;
+  width: 93%;
+  margin: 20px auto;
+  padding:40px;
+  .video{
+    width:100%;
+  }
+}
+
+.bot-container {
+  margin: 0 60px;
+
+  .sub-title {
+    padding: 20px 0;
+    font-size: 28px;
+    color: #2F8CCB;
+    border-bottom: 1px solid #2F8CCB;
+  }
+
+  .desc{
+    margin:30px 0;
+    font-size:24px;
+  }
+
+  .material-section{
+    @include card;
+    color: #2F8CCB;
+    padding:20px;
+    margin:30px 0;
+  }
+
+}
