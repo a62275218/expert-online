@@ -11,8 +11,7 @@ function Modal(props) {
   }, [props.show]);
 
   const handleClose = () => {
-    setShow(false);
-    props.onClose();
+    props.onClose && props.onClose();
   };
 
   const Remainder = (
@@ -32,8 +31,12 @@ function Modal(props) {
             ></Image>
             <View className="subtitle">{props.subtitle}</View>
             {button.map(item => (
-              <View key={item.name} className="button" style="margin:20px 0;" onClick={()=>item.func()}>{item.name}</View>
+              <View key={item.name} className="button" onClick={() => item.func()}>
+                <Image className="icon-img" src={item.img}></Image>
+                {item.name}
+              </View>
             ))}
+            <View className="bottom-txt" onClick={()=>props.bottom.func()}>{props.bottom.text}</View>
           </View>
           {Remainder}
         </View>

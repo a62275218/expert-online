@@ -1,11 +1,11 @@
 import '@tarojs/async-await'
-import Taro, { Component, Config, } from '@tarojs/taro'
+import Taro, { Component, Config, useState } from '@tarojs/taro'
 
 import Index from './pages/index'
 import Login from './pages/login/login'
 import Dashboard from './pages/dashboard/dashboard'
 import My from './pages/my/my'
-import GlobalContext, { globalState } from './context'
+import GlobalContext,{state} from './context'
 
 import './app.scss'
 
@@ -36,7 +36,10 @@ class App extends Component {
       'pages/courseList/courseList',
       'pages/courseVideo/courseVideo',
       'pages/quiz/quiz',
-      'pages/my/my'
+      'pages/my/my',
+      'pages/help/help',
+      'pages/webview/webview',
+      'pages/changeAcc/changeAcc'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -45,7 +48,6 @@ class App extends Component {
       navigationBarTextStyle: 'black'
     }
   }
-
 
   componentDidMount() { }
 
@@ -59,7 +61,7 @@ class App extends Component {
   // 请勿修改此函数
   render() {
     return (
-      <GlobalContext.Provider value={globalState}>
+      <GlobalContext.Provider value={state}>
           <Login />
       </GlobalContext.Provider>
     )

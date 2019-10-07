@@ -1,0 +1,13 @@
+@import '../purchaseMember/purchaseMember.scss';
+
+.btn-img{
+    position:absolute;
+    width:65%;
+    bottom:220px;
+    left:50%;
+    transform:translate(-50%,0)
+}
+
+.purchase-wrapper{
+    margin-top:-300px;
+}

@@ -12,7 +12,7 @@ Taro.setNavigationBarTitle({
 
 const goRedeem = () => {
   Taro.navigateTo({
-    url: "/pages/redeem/redeem"
+    url: "/pages/register/register"
   });
 };
 export default function Intro() {

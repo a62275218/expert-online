@@ -1,7 +1,9 @@
 @import '../courseVideo/courseVideo.scss';
 @import '../../common/mixin.scss';
 
-
+.section-title{
+  padding:0 30px;
+}
 
 .question-wrapper {
   display: flex;
@@ -18,7 +20,7 @@
   }
 
   .answer-item {
-    font-size: 26px;
+    font-size: 28px;
     display: flex;
     align-items: center;
     margin: 30px;
@@ -71,4 +73,9 @@
       border: 1px solid #2F8CCB;
     }
   }
+}
+
+.resImg{
+  width:40px;
+  height:40px;
 }

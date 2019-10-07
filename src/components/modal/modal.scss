@@ -1,4 +1,4 @@
-@import '../../app.scss';
+@import "../../app.scss";
 
 .mask {
   position: absolute;
@@ -6,33 +6,47 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,.8);
-  z-index:1000;
-  display:flex;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  .modal{
-      opacity:1;
-      width:94%;
-      box-sizing:border-box;
-      background:#fff;
-      display:flex;
-      flex-direction:column;
-      align-items: center;
-      border-radius:28px;
-      color: #2F8CCB;
-      z-index:1001;
-      padding:40px 60px;
-      .title{
-          font-size:40px;
-      }
-      .center-img{
-          width:160px;
-          padding:80px 0;
-      }
-      .subtitle{
-          font-size:28px;
-      }
+  .modal {
+    opacity: 1;
+    width: 94%;
+    box-sizing: border-box;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 28px;
+    color: #2f8ccb;
+    z-index: 1001;
+    padding: 40px 60px;
+    .title {
+      font-size: 40px;
+    }
+    .center-img {
+      width: 160px;
+      padding: 80px 0;
+    }
+    .subtitle {
+      font-size: 28px;
+    }
+    .bottom-txt {
+      font-size: 28px;
+      padding: 20px 0;
+    }
+    .button{
+        position: relative;
+        margin:18px 0;
+    }
+    .icon-img {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      left: 110px;
+    }
   }
 }

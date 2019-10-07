@@ -1,4 +1,4 @@
-import Taro, { Component, useState, login } from "@tarojs/taro";
+import Taro, { Component, useState, useEffect, useContext } from "@tarojs/taro";
 import { View, Image, Input } from "@tarojs/components";
 import topImg from "../../images/B-6-BG.png";
 import titleImg from "../../images/EOT-Clear.png";
@@ -7,6 +7,9 @@ import eyeImgClose from "../../images/EYE-ICON-CLOSE.png";
 import iconAccount from "../../images/icon_Account.png";
 import botImg from "../../images/C-BG2.png";
 import resetPsw from "../../images/icon_PW.png";
+import globalContext from '../../context';
+
+import request from '../../common/request'
 
 import "./login.scss";
 
@@ -20,6 +23,22 @@ class Login extends Component {
     const [expireModal, setexpireModal] = useState(false);
     const [forgotPswModal, setForgotPswModal] = useState(false);
 
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const context = useContext(globalContext)
+    
+    useEffect(() => {
+      const user = Taro.getStorageSync('user');
+      if(user){
+        console.log('已登录')
+        Taro.navigateTo({
+          url: "/pages/dashboard/dashboard"
+        });
+        context.user = user
+      }
+    }, [])
+
     Taro.setNavigationBarTitle({
       title: "登录"
     });
@@ -32,10 +51,30 @@ class Login extends Component {
     const closeForgotPsw = () => {
       setForgotPswModal(false);
     };
-    const login = () => {
-      Taro.navigateTo({
-        url: "/pages/dashboard/dashboard"
-      });
+    const login = async () => {
+      if(!email || !password){
+        Taro.showToast({
+          title: '请输入用户名和密码',
+          icon: 'none'
+        })
+        return;
+      }
+      
+      let userInfo = await request('api/public/api/v1/wxLogin', {
+        method: 'POST',
+        data: {
+          email,
+          password
+        }
+      }, '登陆中')
+      console.log(userInfo)
+      if(userInfo){
+        Taro.setStorageSync('user',userInfo)
+        Taro.navigateTo({
+          url: "/pages/dashboard/dashboard"
+        });
+      }
+      console.log(Taro.getStorageSync('user'))
     };
     return (
       <View className="bg" style="display:flex;flex-direction:column;">
@@ -65,7 +104,7 @@ class Login extends Component {
             </View>
             <View className="input">
               <View>邮箱</View>
-              <Input type="text" placeholder="请输入您的邮箱"></Input>
+              <Input type="text" placeholder="请输入您的邮箱" value={email} onChange={e => setEmail(e.target.value)}></Input>
             </View>
             <View className="input">
               <View>密码</View>
@@ -79,6 +118,8 @@ class Login extends Component {
                 type="text"
                 password={!pswShow}
                 placeholder="请输入您的密码"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
               ></Input>
             </View>
             <View
