@@ -10,6 +10,7 @@ import resetPsw from "../../images/icon_PW.png";
 import globalContext from '../../context';
 
 import request from '../../common/request'
+import md5 from 'md5'
 
 import "./login.scss";
 
@@ -52,6 +53,8 @@ class Login extends Component {
       setForgotPswModal(false);
     };
     const login = async () => {
+      console.log(email)
+      console.log(password)
       if(!email || !password){
         Taro.showToast({
           title: '请输入用户名和密码',
@@ -64,7 +67,7 @@ class Login extends Component {
         method: 'POST',
         data: {
           email,
-          password
+          password:md5(password)
         }
       }, '登陆中')
       console.log(userInfo)
@@ -104,7 +107,7 @@ class Login extends Component {
             </View>
             <View className="input">
               <View>邮箱</View>
-              <Input type="text" placeholder="请输入您的邮箱" value={email} onChange={e => setEmail(e.target.value)}></Input>
+              <Input type="text" placeholder="请输入您的邮箱" value={email} onInput={e => setEmail(e.target.value)}></Input>
             </View>
             <View className="input">
               <View>密码</View>
@@ -119,7 +122,7 @@ class Login extends Component {
                 password={!pswShow}
                 placeholder="请输入您的密码"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onInput={e => setPassword(e.target.value)}
               ></Input>
             </View>
             <View

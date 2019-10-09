@@ -31,7 +31,7 @@ export default () => {
   })))
   const [correctCount, setCorrect] = useState(0)
   const submitQuery = useQuery('api/public/api/v1/updateStaffClassProcess', '提交答案中');
-  const certificateQuery = useQuery('certificateCN/example.php','生成证书中')
+  const certificateQuery = useQuery('certificateCN/example.php', '生成证书中')
   const [result, setResult] = useState('')
   const router = useRouter()
   const [showRes, setShowRes] = useState(false)
@@ -61,11 +61,11 @@ export default () => {
         } else if (classRes.ifFinish == 1) {
           setResult('finish')
           certificateQuery.request({
-            method:'POST',
-            data:{
-              name:context.user.lastName + ' ' + context.user.firstName,
-              className:context.course.className,
-              finishDate:`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+            method: 'POST',
+            data: {
+              name: context.user.lastName + ' ' + context.user.firstName,
+              className: context.course.className,
+              finishDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
             }
           })
         }
@@ -105,10 +105,10 @@ export default () => {
 
   const submitResult = () => {
     let count = correctCount,
-        course = context.course,
-        doneList = course.unitDone,
-        progress,
-        classProcessObj;
+      course = context.course,
+      doneList = course.unitDone,
+      progress,
+      classProcessObj;
     count = answerMap.reduce((count, current) => {
       return current.correct == current.select ? count + 1 : count
     }, 0)
@@ -128,7 +128,7 @@ export default () => {
         unitFail: failList,
         ifFinish: progress == 100 ? 1 : 0,
         classProcess: progress + '',
-        finishDate: progress == 100 ?`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`:''
+        finishDate: progress == 100 ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : ''
       }
     } else {
       const doneList = course.unitDone;
@@ -139,7 +139,7 @@ export default () => {
       progress = Math.floor((doneList.length / course.countUnitNum) * 100);
       classProcessObj = {
         classId: course.classId,
-        classProcess:progress,
+        classProcess: progress,
         unitDone: doneList,
         unitFail: course.unitFail.indexOf(context.unit.id) > -1 ? course.unitFail : course.unitFail.concat(context.unit.id),
         ifFinish: 0
@@ -238,12 +238,17 @@ export default () => {
                 <View className="answer-item" key={option} onClick={() => { showRes ? '' : select(option) }}>
                   <View className={answerMap[currentIndex].select == index ? "radio-ico selected" : "radio-ico"}></View>
                   <View style="flex:1;">{option}</View>
-                  {showRes && answerMap[currentIndex].correct == index && <Image className="resImg" src={correctImg}></Image>}
-                  {showRes && answerMap[currentIndex].select != answerMap[currentIndex].correct && answerMap[currentIndex].select == index && <Image className="resImg" src={incorrectImg}></Image>}
+                  {
+                    showRes && answerMap[currentIndex].select == index &&
+                    <Image className="resImg" src={answerMap[currentIndex].select == answerMap[currentIndex].correct ? correctImg : incorrectImg}></Image>
+                  }
                 </View>
               )
             })
           }
+          {showRes &&<View className="feedback">{
+            answerMap[currentIndex].select == answerMap[currentIndex].correct?quiz[currentIndex].questionFeedbackCorrectTrans:quiz[currentIndex].questionFeedbackIncorrectTrans
+          }</View>}
         </View>
         <View className="action">
           <View className="button prev" style={currentIndex == 0 ? 'visibility:hidden' : ''} onClick={() => setCurrentIndex(idx => judgeIndex('minus', idx))}>上一题</View>

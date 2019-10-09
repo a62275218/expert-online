@@ -1,11 +1,13 @@
 import Taro, { useState, useRouter, useContext, useEffect, useDidShow } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import globalContext from '../../context';
-import { useQuery } from '../../common/request';
+import request, { useQuery } from '../../common/request';
 
 import topImg from '../../images/Group.png';
 import downloadImg from '../../images/download-b.png'
 import whitedownImg from '../../images/download-w.png'
+
+import {downloadFile} from '../../common/utils'
 
 import './my.scss'
 
@@ -15,6 +17,7 @@ export default () => {
   const { user } = context
   const { title } = router.params
   const [history, setHistory] = useState([])
+  const [certificateList,setCertificateList] = useState([])
   title && Taro.setNavigationBarTitle({
     title
   })
@@ -22,7 +25,18 @@ export default () => {
   const queryCertificate = useQuery('certificateCN/example.php')
 
   useDidShow(() => {
-    console.log(context)
+    const newList = []; 
+    user.classProcess.forEach(item => {
+      newList.push({
+        img: downloadImg,
+        activeImg: whitedownImg,
+        title: item.className,
+        right: item.finishDate,
+        func: generateCertificate
+      })
+    })
+    console.log(newList)
+    setCertificateList(newList)
     if (title === '购买记录') {
       queryHistory.request({
         method: 'POST',
@@ -41,30 +55,22 @@ export default () => {
 
   const generateCertificate = (row) => {
     console.log(row)
-    queryCertificate.request({
-      method:'POST',
-      data:{
-        name:user.lastName + ' ' + user.firstName,
-        className:row.title,
-        finishDate:row.right
+    request('certificateCN/example.php',{
+      method: 'POST',
+      data: {
+        name: user.lastName + ' ' + user.firstName,
+        className: row.title,
+        finishDate: row.right
       }
+    }).then(res=>{
+      downloadFile(res)
     })
   }
 
   const myMap = {
     "我的证书": {
       subtitle: '证书清单',
-      list: user.classProcess.map(item => {
-        if (item.ifFinish) {
-          return {
-            img: downloadImg,
-            activeImg: whitedownImg,
-            title: item.className,
-            right: item.finishDate,
-            func: generateCertificate
-          }
-        }
-      })
+      list: certificateList
     },
     "课程材料": {
       subtitle: '上过的课程',
@@ -98,6 +104,9 @@ export default () => {
   }
 
   const [pageList, setPageList] = useState(myMap[title].list)
+  useEffect(()=>{
+    setPageList(myMap[title].list)
+  },[myMap[title].list])
   useEffect(() => {
     if (!queryHistory.isLoading) {
       console.log(queryHistory.data)

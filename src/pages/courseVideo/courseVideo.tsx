@@ -6,6 +6,7 @@ import download from '../../images/download-b.png'
 import globalContext from '../../context'
 
 import { useQuery } from '../../common/request'
+import { downloadFile } from '../../common/utils'
 
 import './courseVideo.scss'
 
@@ -41,32 +42,7 @@ export default () => {
   }
   const downloadDoc = (source) => {
     if (source.url) {
-      Taro.showLoading({
-        title: '下载中'
-      })
-      Taro.downloadFile({
-        url: source.url,
-        success: res => {
-          console.log(res)
-          Taro.saveFile({
-            tempFilePath: res.tempFilePath,
-            success:()=>{
-              Taro.showToast({
-                title: '下载文件成功'
-              })
-            },
-            complete:()=>{
-              Taro.hideLoading();
-            }
-          })
-        },
-        fail: () => {
-          Taro.showToast({
-            title: '下载文件失败',
-            icon: 'none'
-          })
-        }
-      })
+      downloadFile(source.url)
     } else {
       Taro.showToast({
         title: '缺失文件',
@@ -86,7 +62,7 @@ export default () => {
       </View>
       <View className="section-title">{unit.videoName}</View>
       <View className="video-container">
-        <Video
+        {/* <Video
           className="video"
           src={unit.videoUrl}
           controls={true}
@@ -95,7 +71,7 @@ export default () => {
           id='video'
           loop={false}
           muted={false}
-        />
+        /> */}
       </View>
       <View className="bot-container">
         <View className="sub-title">视频介绍</View>

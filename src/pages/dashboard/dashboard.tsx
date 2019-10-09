@@ -41,12 +41,12 @@ const Dashboard = () => {
   const context = useContext(globalContext)
 
   useDidShow(() => {
-    const storageUser = Taro.getStorageSync('user')
-    if(context.user){
+    const queryUser = context.user || user
+    if(queryUser){
       userQuery.request({
         method:'POST',
         data:{
-          id:context.user.id
+          id:queryUser.id
         }
       });
     }

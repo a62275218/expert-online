@@ -2,6 +2,7 @@ import Taro, { useContext, useState } from "@tarojs/taro";
 import { View, Image, Input } from "@tarojs/components";
 import eyeImg from "../../images/EYE-ICON.png";
 import eyeImgClose from "../../images/EYE-ICON-CLOSE.png";
+import md5 from "md5"
 
 import bg from "../../images/B-4-BG.png";
 import './register.scss'
@@ -75,7 +76,7 @@ const Register = () => {
         lastName,
         phone,
         email,
-        password
+        password:md5(password)
       }
     })
     console.log(userRes)
