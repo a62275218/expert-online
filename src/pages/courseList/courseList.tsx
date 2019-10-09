@@ -1,7 +1,7 @@
 import Taro, { useState, useRouter, useDidShow, useEffect,useContext } from "@tarojs/taro";
 import { View, Image } from "@tarojs/components";
 import topImg from '../../images/Group.png'
-import watch from '../../images/watch video.png'
+import watch from '../../images/watch_video.png'
 import fail from '../../images/Fail.png'
 import done from '../../images/Done-W.png'
 

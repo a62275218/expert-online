@@ -27,7 +27,7 @@ export default () => {
   useDidShow(() => {
     const newList = []; 
     user.classProcess.forEach(item => {
-      newList.push({
+      item.ifFinish && newList.push({
         img: downloadImg,
         activeImg: whitedownImg,
         title: item.className,
@@ -55,7 +55,7 @@ export default () => {
 
   const generateCertificate = (row) => {
     console.log(row)
-    request('certificateCN/example.php',{
+    request('certificateCN/exampleSec.php',{
       method: 'POST',
       data: {
         name: user.lastName + ' ' + user.firstName,
@@ -63,7 +63,7 @@ export default () => {
         finishDate: row.right
       }
     }).then(res=>{
-      downloadFile(res)
+      downloadFile('https://eot.weboostapp.com/certificateCN/displayCertificate.jpg','image')
     })
   }
 

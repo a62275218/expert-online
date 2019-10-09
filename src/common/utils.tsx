@@ -33,6 +33,22 @@ export const downloadFile = (url, type?) => {
                         })
                     }
                 })
+            }else if(type == 'image'){
+                console.log(res.tempFilePath)
+                Taro.saveImageToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success: res => {
+                        Taro.showToast({
+                            title: '下载文件成功'
+                        })
+                    },
+                    fail:()=>{
+                        Taro.showToast({
+                            title: '下载文件失败',
+                            icon: 'none'
+                        })
+                    }
+                })
             } else {
                 Taro.openDocument({
                     filePath: res.tempFilePath,

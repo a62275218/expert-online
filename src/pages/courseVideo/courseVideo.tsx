@@ -42,7 +42,7 @@ export default () => {
   }
   const downloadDoc = (source) => {
     if (source.url) {
-      downloadFile(source.url)
+      downloadFile(source.url,'image')
     } else {
       Taro.showToast({
         title: '缺失文件',
