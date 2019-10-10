@@ -11,13 +11,10 @@ import Modal from "../../components/modal/modal";
 import globalContext from '../../context'
 import "./redeem.scss";
 
-
-
-Taro.setNavigationBarTitle({
-  title: "购买会员"
-});
-
 const Redeem = () => {
+  Taro.setNavigationBarTitle({
+    title: "购买会员"
+  });
   const context = useContext(globalContext)
 
   const [successModal, setSuccessModal] = useState(false);

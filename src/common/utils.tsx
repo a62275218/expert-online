@@ -3,9 +3,10 @@ import Taro from '@tarojs/taro'
 export const downloadFile = (url, type?) => {
     Taro.getSetting({
         success:res=>{
+            console.log(res)
             if(res.authSetting['scope.writePhotosAlbum']){
                 console.log('已授权')
-            }else{
+            }else if(res.authSetting['scope.writePhotosAlbum'] === false){
                 console.log('未授权')
                 Taro.openSetting()
             }
@@ -34,7 +35,6 @@ export const downloadFile = (url, type?) => {
                     }
                 })
             }else if(type == 'image'){
-                console.log(res.tempFilePath)
                 Taro.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: res => {
@@ -42,7 +42,8 @@ export const downloadFile = (url, type?) => {
                             title: '下载文件成功'
                         })
                     },
-                    fail:()=>{
+                    fail:(err)=>{
+                        console.log(err)
                         Taro.showToast({
                             title: '下载文件失败',
                             icon: 'none'

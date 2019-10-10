@@ -6,16 +6,16 @@ import "./intro.scss";
 
 import Slogan from "../../components/slogan/slogan";
 
-Taro.setNavigationBarTitle({
-  title: "介绍"
-});
-
+export default function Intro() {
+  Taro.setNavigationBarTitle({
+    title: "介绍"
+  });
+  
 const goRedeem = () => {
   Taro.navigateTo({
     url: "/pages/register/register"
   });
 };
-export default function Intro() {
   return (
     <View className="bg" style="display:flex;flex-direction:column">
       <Image src={bg} className="bg-img"></Image>

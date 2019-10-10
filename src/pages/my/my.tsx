@@ -7,7 +7,7 @@ import topImg from '../../images/Group.png';
 import downloadImg from '../../images/download-b.png'
 import whitedownImg from '../../images/download-w.png'
 
-import {downloadFile} from '../../common/utils'
+import { downloadFile } from '../../common/utils'
 
 import './my.scss'
 
@@ -16,17 +16,27 @@ export default () => {
   const context = useContext(globalContext)
   const { user } = context
   const { title } = router.params
-  const [history, setHistory] = useState([])
-  const [certificateList,setCertificateList] = useState([])
+  const [certificateList, setCertificateList] = useState([])
+  const [courseList, setCourseList] = useState(context.user.classProcess)
+  const [unitList, setUnitList] = useState([])
   title && Taro.setNavigationBarTitle({
     title
   })
   const queryHistory = useQuery('api/public/api/v1/fetchHistoryPayment')
-  const queryCertificate = useQuery('certificateCN/example.php')
+  const unitQuery = useQuery('api/public/api/v1/fetchUnitsByClassIds')
 
   useDidShow(() => {
-    const newList = []; 
+    console.log(context)
+    const newList = [];
+    const courseL = [];
     user.classProcess.forEach(item => {
+      // item.ifFinish && newList.push({
+      //   img: downloadImg,
+      //   activeImg: whitedownImg,
+      //   title: item.className,
+      //   right: item.finishDate,
+      //   func: generateCertificate
+      // })
       item.ifFinish && newList.push({
         img: downloadImg,
         activeImg: whitedownImg,
@@ -34,9 +44,16 @@ export default () => {
         right: item.finishDate,
         func: generateCertificate
       })
+      item.ifFinish && courseL.push({
+        id: item.classId,
+        title: item.className,
+        right: item.finishDate,
+        func: goUnitDetail
+      })
     })
     console.log(newList)
     setCertificateList(newList)
+    setCourseList(courseL)
     if (title === '购买记录') {
       queryHistory.request({
         method: 'POST',
@@ -45,7 +62,22 @@ export default () => {
         }
       })
     }
+    if (title === '材料列表') {
+      unitQuery.request({
+        method: 'POST',
+        data: {
+          classId: router.params.id
+        }
+      })
+    }
   })
+
+  const goUnitDetail = (row) => {
+    console.log(row)
+    Taro.navigateTo({
+      url: `/pages/my/my?title=材料列表&id=${row.id}`
+    })
+  }
 
   const changeAcc = (row) => {
     Taro.navigateTo({
@@ -55,15 +87,15 @@ export default () => {
 
   const generateCertificate = (row) => {
     console.log(row)
-    request('certificateCN/exampleSec.php',{
+    request('certificateCN/exampleSec.php', {
       method: 'POST',
       data: {
         name: user.lastName + ' ' + user.firstName,
         className: row.title,
         finishDate: row.right
       }
-    }).then(res=>{
-      downloadFile('https://eot.weboostapp.com/certificateCN/displayCertificate.jpg','image')
+    }).then(res => {
+      downloadFile('https://eot.weboostapp.com/certificateCN/displayCertificate.jpg', 'image')
     })
   }
 
@@ -74,11 +106,11 @@ export default () => {
     },
     "课程材料": {
       subtitle: '上过的课程',
-      list: [
-        {
-          title: '课程1'
-        }
-      ]
+      list: courseList
+    },
+    "材料列表": {
+      subtitle: '上过的课程',
+      list: unitList
     },
     "账号设定": {
       subtitle: '我的资料',
@@ -104,9 +136,9 @@ export default () => {
   }
 
   const [pageList, setPageList] = useState(myMap[title].list)
-  useEffect(()=>{
+  useEffect(() => {
     setPageList(myMap[title].list)
-  },[myMap[title].list])
+  }, [myMap[title].list])
   useEffect(() => {
     if (!queryHistory.isLoading) {
       console.log(queryHistory.data)
@@ -120,6 +152,13 @@ export default () => {
       })))
     }
   }, [queryHistory.data])
+
+  useEffect(() => {
+    if (!unitQuery.isLoading) {
+      setUnitList(unitQuery.data[0].unitData)
+      console.log(unitQuery.data[0].unitData)
+    }
+  }, [unitQuery.data])
 
   const setActive = (detail, idx) => {
     setPageList(list => {
@@ -145,6 +184,17 @@ export default () => {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   }
 
+  const downloadDoc = (source) => {
+    if (source.url) {
+      downloadFile(source.url, 'image')
+    } else {
+      Taro.showToast({
+        title: '缺失文件',
+        icon: 'none'
+      })
+    }
+  }
+
   return (<View className="bg">
     <Image src={topImg} mode="widthFix" style="width:100%;"></Image>
     <View className="top-left">{title}</View>
@@ -162,7 +212,24 @@ export default () => {
         </View>
       </View>
     </View>}
-    <View className="section">
+    {title == '材料列表' && <View className="section">
+      {
+        unitList.map(item => <View key={item.id}>
+          <View className="section-title">{item.videoName}</View>
+          {
+            !item.documentUrl.length && <View className="row">暂无材料</View>
+          }
+          {
+            item.documentUrl.map(i => <View key={i.url} className="row" onClick={() => downloadDoc(i)}>
+              <Image className="icon" src={downloadImg}></Image>
+              <View style="flex:1;">{i.name}</View>
+            </View>)
+          }
+        </View>)
+      }
+    </View>}
+
+    {title !== '材料列表' && <View className="section">
       <View className="section-title">{myMap[title].subtitle}</View>
       {pageList && pageList.map((row, idx) =>
         <View className={row.active ? "row active" : "row"} key={row.title} onClick={() => { setActive(row, idx); row.func(row) }}>
@@ -170,6 +237,6 @@ export default () => {
           <View style="flex:1;">{row.title}</View>
           <View>{row.right}</View>
         </View>)}
-    </View>
+    </View>}
   </View>)
 }

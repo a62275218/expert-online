@@ -6,7 +6,9 @@ import download from '../../images/download-b.png'
 import globalContext from '../../context'
 
 import { useQuery } from '../../common/request'
-import { downloadFile } from '../../common/utils'
+import { downloadFile } from '../../common/utils';
+import Modal from "../../components/modal/modal";
+import mustImg from '../../images/must-know.png'
 
 import './courseVideo.scss'
 
@@ -18,6 +20,7 @@ export default () => {
   const videoQuery = useQuery('api/public/api/v1/fetchUnitById')
 
   const [unit, setUnit] = useState({})
+  const [mustModalShow,setmustModalShow] = useState(false)
   const context = useContext(globalContext)
 
   useDidShow(() => {
@@ -32,27 +35,38 @@ export default () => {
     if (!videoQuery.isLoading) {
       setUnit(videoQuery.data[0])
       context.unit = videoQuery.data[0]
+      Taro.setStorageSync('quiz',videoQuery.data[0].quest)
+      Taro.setStorageSync('context',context)
     }
   }, [videoQuery.data])
   const goQuiz = () => {
-    context.quiz = unit.quest
-    Taro.navigateTo({
-      url: `/pages/quiz/quiz`
+    context.unit.quest=[];
+    Taro.removeStorageSync('timer')
+    Taro.reLaunch({
+      url: `/pages/quiz/quiz?context=${JSON.stringify(context)}`
     })
   }
   const downloadDoc = (source) => {
     if (source.url) {
-      downloadFile(source.url,'image')
+      downloadFile(source.url, 'image')
     } else {
       Taro.showToast({
         title: '缺失文件',
         icon: 'none'
       })
     }
-
   }
   return (
     <View>
+      <Modal show={mustModalShow}
+        title="做题须知"
+        img={mustImg}
+        subtitle={`测验有7题,答对5题才算过关\r\n测验时间:20分钟`}
+        button={[
+          { name: "知道了", func: goQuiz }
+        ]}
+        onClose={()=>setmustModalShow(false)}
+        ></Modal>
       <Image src={topImg} mode="widthFix" className="resized-img"></Image>
       <View className="top-left">{context.course.className}</View>
       <View className="top-right">
@@ -85,7 +99,7 @@ export default () => {
             </View>
           ))
         }
-        <View className="button" style="margin:40px 0;" onClick={() => goQuiz()}>开始做题</View>
+        <View className="button" style="margin:40px 0;" onClick={() => setmustModalShow(true)}>开始做题</View>
       </View>
     </View>
   );

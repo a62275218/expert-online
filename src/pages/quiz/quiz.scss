@@ -3,6 +3,18 @@
 
 .section-title{
   padding:0 30px;
+  display:flex;
+  .warn{
+    color:red;
+  }
+  .timer{
+    display:flex;
+    align-items: center;
+    .timer-img{
+      width:50px;
+      margin-right:10px;
+    }
+  }
 }
 
 .question-wrapper {

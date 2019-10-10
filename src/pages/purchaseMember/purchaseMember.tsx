@@ -4,15 +4,12 @@ import Footer from "../../components/footer/footer";
 
 import bg from '../../images/B-1_BG.png'
 
-Taro.setNavigationBarTitle({
-    title: '购买会员'
-})
-
 import './purchaseMember.scss'
 
-
-
 const PurchaseMember = (props) => {
+    Taro.setNavigationBarTitle({
+        title: '购买会员'
+    })
 
     const [type, setType] = useState('')
 

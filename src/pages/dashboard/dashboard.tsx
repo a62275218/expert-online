@@ -16,9 +16,7 @@ const Dashboard = () => {
   });
   const dashboardList = [
     {
-      title: '我的课程', list: [
-        { label: '课程1', progress: '28%', url: '/pages/courseList/courseList' }
-      ]
+      title: '我的课程', list: []
     },
     {
       title: '档案中心', list: [
@@ -30,7 +28,8 @@ const Dashboard = () => {
       title: '我的账号', list: [
         { label: '账号设定', url: '/pages/my/my' },
         { label: '购买记录', url: '/pages/my/my' },
-        { label: '帮助', url: '/pages/help/help' }
+        { label: '帮助', url: '/pages/help/help' },
+        { label: '登出', url: '/pages/login/login' }
       ]
     }
   ]
@@ -69,6 +68,13 @@ const Dashboard = () => {
   },[userQuery.data])
 
   const goDetail = (item) => {
+    if(item.label == '登出'){
+      Taro.removeStorageSync('user')
+      Taro.reLaunch({
+        url:item.url
+      })
+      return
+    }
     Taro.navigateTo({
       url: `${item.url}?title=${item.label}`
     })

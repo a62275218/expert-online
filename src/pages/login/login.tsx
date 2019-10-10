@@ -33,7 +33,7 @@ class Login extends Component {
       const user = Taro.getStorageSync('user');
       if(user){
         console.log('已登录')
-        Taro.navigateTo({
+        Taro.reLaunch({
           url: "/pages/dashboard/dashboard"
         });
         context.user = user
@@ -73,7 +73,7 @@ class Login extends Component {
       console.log(userInfo)
       if(userInfo){
         Taro.setStorageSync('user',userInfo)
-        Taro.navigateTo({
+        Taro.reLaunch({
           url: "/pages/dashboard/dashboard"
         });
       }

@@ -135,6 +135,7 @@ export default () => {
                 <View className="button" onClick={() => changePsw()}>确认修改</View>
             </View>}
             {subtitle == "修改手机" && <View className="card">
+            <View>旧手机号：{user.phone}</View>
                 <View className="input">
                     <View>新手机号</View>
                     <Input

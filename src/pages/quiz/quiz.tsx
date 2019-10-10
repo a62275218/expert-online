@@ -2,8 +2,9 @@ import Taro, {
   useDidShow,
   useState,
   useEffect,
-  useContext,
-  useRouter
+  useRef,
+  useRouter,
+  useDidHide
 } from "@tarojs/taro";
 import { View, Image, Video } from "@tarojs/components";
 import topImg from "../../images/Group.png";
@@ -29,17 +30,19 @@ export default () => {
   Taro.setNavigationBarTitle({
     title: "开始学习"
   });
-  const context = useContext(globalContext);
-  const { user } = context;
-  const [quiz] = useState(context.quiz);
+  const router = useRouter();
+  const context = router.params.context && Taro.getStorageSync('context') || JSON.parse(router.params.context) ;
+  const [quiz] = useState(Taro.getStorageSync('quiz'));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [options, setOptions] = useState([]);
+  const [count, setCount] = useState(20 * 60);
+  const timer = useRef({})
   const [answerMap, setAnserMap] = useState(
     quiz &&
-      quiz.map(item => ({
-        correct: item.questionCorrectAnswerIndex,
-        select: null
-      }))
+    quiz.map(item => ({
+      correct: item.questionCorrectAnswerIndex,
+      select: null
+    }))
   );
   const [correctCount, setCorrect] = useState(0);
   const submitQuery = useQuery(
@@ -51,7 +54,6 @@ export default () => {
     "生成证书中"
   );
   const [result, setResult] = useState("");
-  const router = useRouter();
   const [showRes, setShowRes] = useState(false);
 
   useEffect(() => {
@@ -59,46 +61,129 @@ export default () => {
   }, [currentIndex]);
 
   useDidShow(() => {
-    console.log(context);
+    setCount(Taro.getStorageSync('timer') || (20 * 60));
+    if (!router.params.showRes) {
+      timer.current = setInterval(() => {
+        setCount(c => c - 1)
+      }, 1000)
+    }
     if (router.params.showRes) {
       setShowRes(true);
       setAnserMap(JSON.parse(router.params.map));
     }
   });
+  useDidHide(()=>{
+    Taro.setStorageSync('timer',count)
+    clearInterval(timer.current)
+  })
+  useEffect(() => {
+    if (count === 0) {
+      console.log('到时间')
+      submitResult()
+      clearInterval(timer.current)
+    }
+  }, [count])
+
+  const compareDate = (newDate, oldDate) => {
+    if (newDate.getFullYear() > oldDate.getFullYear()) {
+      return true
+    }
+    if (newDate.getMonth() > oldDate.getMonth()) {
+      return true
+    }
+    if (newDate.getDate() > oldDate.getDate()) {
+      return true
+    }
+    return false
+  }
 
   useEffect(() => {
-    if (!submitQuery.isLoading) {
-      const date = new Date();
-      if (submitQuery.data && submitQuery.data.code == 0) {
-        const classRes = submitQuery.data.classData[0];
-        context.course = classRes;
-        if (
-          classRes.unitDone.indexOf(context.unit.id) > -1 &&
-          classRes.ifFinish != 1
-        ) {
-          setResult("pass");
-        } else if (classRes.unitFail.indexOf(context.unit.id) > -1) {
-          setResult("fail");
-        } else if (classRes.ifFinish == 1) {
-          setResult("finish");
-          certificateQuery.request({
-            method: "POST",
-            data: {
-              name: context.user.lastName + " " + context.user.firstName,
-              className: context.course.className,
-              finishDate: `${date.getFullYear()}-${date.getMonth() +
-                1}-${date.getDate()}`
-            }
-          });
+    (async () => {
+      if (!submitQuery.isLoading) {
+        const date = new Date();
+        if (submitQuery.data && submitQuery.data.code == 0) {
+          const classRes = submitQuery.data.classData[0];
+          context.course = classRes;
+          if (
+            classRes.unitDone.indexOf(context.unit.id) > -1 &&
+            classRes.ifFinish != 1
+          ) {
+            setResult("pass");
+          } else if (classRes.unitFail.indexOf(context.unit.id) > -1) {
+            setResult("fail");
+          } else if (classRes.ifFinish == 1) {
+            setResult("finish");
+            certificateQuery.request({
+              method: "POST",
+              data: {
+                name: context.user.lastName + " " + context.user.firstName,
+                className: context.course.className,
+                finishDate: `${date.getFullYear()}-${date.getMonth() +
+                  1}-${date.getDate()}`
+              }
+            });
+          }
         }
       }
-    }
+    })()
   }, [submitQuery.data]);
+
+  const judgeTimes = () => {
+    return new Promise((resolve) => {
+      // const date = new Date('2019-10-23');
+      const date = new Date();
+      const dateString = `${date.getFullYear()}-${date.getMonth() +
+        1}-${date.getDate()}`
+      const storedDate = new Date(Taro.getStorageSync('date')) || date
+      const dateDiff = compareDate(date, storedDate);
+      let attemps = Taro.getStorageSync('attempts') || [];
+      if (dateDiff) {
+        console.log('清除次数')
+        Taro.removeStorageSync('attempts')
+        attemps=[]
+      }
+      Taro.setStorageSync('date', dateString)
+      let found = false;
+      console.log(attemps)
+      let limit = false;
+      attemps.forEach(item => {
+        if (item.user == context.user.id && item.class == context.course.classId && item.unit == context.unit.id) {
+          console.log('做过题目了');
+          found = true;
+          item.times++;
+          if (item.times > 3) {
+            limit = true
+          }
+        }
+      })
+      if (limit) {
+        resolve(true)
+      }
+      if (!found) {
+        attemps.push({
+          user: context.user.id,
+          class: context.course.classId,
+          unit: context.unit.id,
+          times: 1
+        })
+      }
+      Taro.setStorageSync('attempts', attemps)
+      resolve(false)
+    })
+  }
 
   const select = (option: any) => {
     answerMap[currentIndex].select = options.indexOf(option);
     setAnserMap(answerMap);
   };
+
+  const transSec = (time) => {
+    return `${fillZero(Math.floor(time / 60))}:${fillZero(time % 60)}`
+  }
+
+  const fillZero = (num) => {
+    return ("00000" + num).substr(-2)
+  }
 
   const judgeIndex = (action, index) => {
     if (action == "minus") {
@@ -125,7 +210,13 @@ export default () => {
     submitResult();
   };
 
-  const submitResult = () => {
+  const submitResult = async() => {
+    //Taro.setStorageSync('timer',120)
+    const excced = await judgeTimes();
+    if (excced) {
+      setResult("limit")
+      return
+    }
     let count = correctCount,
       course = context.course,
       doneList = course.unitDone,
@@ -194,29 +285,47 @@ export default () => {
   };
 
   const backToDashboard = () => {
-    Taro.navigateTo({
+    Taro.reLaunch({
       url: "/pages/dashboard/dashboard"
     });
   };
 
   const goVideo = () => {
-    Taro.navigateBack();
+    Taro.reLaunch({
+      url:`/pages/courseVideo/courseVideo?id=${context.unit.id}`
+    });
   };
 
-  const redo = () => {
+  const redo = async() => {
+    Taro.removeStorageSync('timer')
+    Taro.setStorageSync('context',context)
+    const excced = await judgeTimes();
+    if (excced) {
+      setResult("limit")
+      return
+    }
     Taro.redirectTo({
-      url: "/pages/quiz/quiz"
+      url: `/pages/quiz/quiz?context=${JSON.stringify(context)}`
     });
   };
 
   const showResult = () => {
     Taro.redirectTo({
-      url: `/pages/quiz/quiz?showRes=true&map=${JSON.stringify(answerMap)}`
+      url: `/pages/quiz/quiz?context=${JSON.stringify(context)}&showRes=true&map=${JSON.stringify(answerMap)}`
     });
   };
 
   return (
     <View className="bg">
+      <Modal
+        show={result === "limit"}
+        title="本日尝试次数已到"
+        img={failImg}
+        subtitle={`请明天再来回答该题`}
+        button={[
+          { name: "返回个人中心", func: backToDashboard }
+        ]}
+      ></Modal>
       <Modal
         show={result === "pass"}
         title="测验通过"
@@ -279,9 +388,9 @@ export default () => {
             <View>完成</View>
           </View>
           <View className="section-title">
-            {quiz[currentIndex].QuizNameTrans}
-            <View>
-              <Image src={timerImg}></Image>
+            <View style="flex:1;">{quiz[currentIndex].QuizNameTrans}</View>
+            <View className={count < 120 ? "timer warn" : "timer"} style={showRes ? "visibility:hidden" : ''}>
+              <Image className="timer-img" mode="widthFix" src={timerImg}></Image>{transSec(count)}
             </View>
           </View>
           <View className="question">
@@ -310,7 +419,7 @@ export default () => {
                       className="resImg"
                       src={
                         answerMap[currentIndex].select ==
-                        answerMap[currentIndex].correct
+                          answerMap[currentIndex].correct
                           ? correctImg
                           : incorrectImg
                       }
@@ -338,6 +447,12 @@ export default () => {
           <View className="num">
             {currentIndex + 1}/{quiz.length}
           </View>
+          {
+            showRes && currentIndex + 1 == quiz.length &&
+            <View className="button" onClick={()=>{()=>backToDashboard()}}>
+              返回个人中心
+            </View>
+          }
           {currentIndex + 1 == quiz.length ? (
             !showRes && (
               <View className="button" onClick={() => submit()}>
@@ -345,18 +460,18 @@ export default () => {
               </View>
             )
           ) : (
-            <View
-              className="button prev"
-              style={
-                quiz && currentIndex == quiz.length - 1
-                  ? "visibility:hidden"
-                  : ""
-              }
-              onClick={() => setCurrentIndex(idx => judgeIndex("add", idx))}
-            >
-              下一题
+              <View
+                className="button prev"
+                style={
+                  quiz && currentIndex == quiz.length - 1
+                    ? "visibility:hidden"
+                    : ""
+                }
+                onClick={() => setCurrentIndex(idx => judgeIndex("add", idx))}
+              >
+                下一题
             </View>
-          )}
+            )}
         </View>
       </View>
     </View>
