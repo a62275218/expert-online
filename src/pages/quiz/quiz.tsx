@@ -372,13 +372,12 @@ export default () => {
       <View className="question-wrapper">
         <View style="flex:1;">
           <View className="top-right">
-            <View className="top-section">
+            <View className="top-section active">
               观看视频
               <Image
                 src={nextImg}
                 mode="widthFix"
                 className="sec-img"
-                style="opacity:0.4"
               ></Image>
             </View>
             <View className="top-section active">
@@ -449,7 +448,7 @@ export default () => {
           </View>
           {
             showRes && currentIndex + 1 == quiz.length &&
-            <View className="button" onClick={()=>{()=>backToDashboard()}}>
+            <View className="button" onClick={()=>backToDashboard()}>
               返回个人中心
             </View>
           }
