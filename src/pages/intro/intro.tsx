@@ -10,12 +10,12 @@ export default function Intro() {
   Taro.setNavigationBarTitle({
     title: "介绍"
   });
-  
-const goRedeem = () => {
-  Taro.navigateTo({
-    url: "/pages/register/register"
-  });
-};
+
+  const goRedeem = () => {
+    Taro.navigateTo({
+      url: "/pages/register/register"
+    });
+  };
   return (
     <View className="bg" style="display:flex;flex-direction:column">
       <Image src={bg} className="bg-img"></Image>

@@ -75,3 +75,22 @@ export const downloadFile = (url, type?) => {
         }
     })
 }
+
+export const generateDate = (inputDate)=>{
+    const monthMap =[
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Spe',
+        'Oct',
+        'Nov',
+        'Dec'
+    ]
+    const date = new Date(inputDate)
+    return `${date.getDate()}/${monthMap[date.getMonth()]}/${date.getFullYear()}`
+}

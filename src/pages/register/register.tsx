@@ -10,11 +10,10 @@ import globalContext from '../../context';
 
 import request from '../../common/request'
 
-Taro.setNavigationBarTitle({
-  title: "购买会员"
-});
-
 const Register = () => {
+  Taro.setNavigationBarTitle({
+    title: "购买会员"
+  });
   const [pswShow, setPswShow] = useState(false);
   const [rePswShow, setRePswShow] = useState(false);
 

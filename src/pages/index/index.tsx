@@ -13,11 +13,12 @@ import './index.scss'
 //
 // #endregion
 
-Taro.setNavigationBarTitle({
-  title:'个人中心'
-})
+
 
 function Index (){
+  Taro.setNavigationBarTitle({
+    title:'个人中心'
+  })
   const [num,lock] = useState(3);
   return (
     <View className="bg">

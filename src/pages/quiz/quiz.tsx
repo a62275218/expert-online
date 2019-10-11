@@ -358,7 +358,7 @@ export default () => {
         show={result === "finish"}
         title="你的课程都完成了"
         img={finishImg}
-        subtitle={`恭喜完成 ${context.course && context.course.className} 课程`}
+        subtitle={`恭喜完成 ${context.course && context.course.className} 课程,前往下载您的证书！`}
         button={[
           { name: "下载课程证书", func: downloadCertificate, img: downloadImg }
         ]}

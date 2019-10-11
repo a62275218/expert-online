@@ -19,6 +19,9 @@ import Modal from "../../components/modal/modal";
 
 class Login extends Component {
   render() {
+    Taro.setNavigationBarTitle({
+      title: "登录"
+    });
     const [pswShow, setPswShow] = useState(false);
     const [error, setError] = useState(false);
     const [expireModal, setexpireModal] = useState(false);
@@ -39,10 +42,6 @@ class Login extends Component {
         context.user = user
       }
     }, [])
-
-    Taro.setNavigationBarTitle({
-      title: "登录"
-    });
 
     const goPurchase = () => {
       Taro.navigateTo({

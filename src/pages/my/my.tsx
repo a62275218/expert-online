@@ -2,12 +2,13 @@ import Taro, { useState, useRouter, useContext, useEffect, useDidShow } from '@t
 import { View, Image } from '@tarojs/components'
 import globalContext from '../../context';
 import request, { useQuery } from '../../common/request';
-
 import topImg from '../../images/Group.png';
 import downloadImg from '../../images/download-b.png'
 import whitedownImg from '../../images/download-w.png'
+import nextIcon from '../../images/next-icon.png'
+import nextIconWhite from '../../images/white-next-icon.png'
 
-import { downloadFile } from '../../common/utils'
+import { downloadFile,generateDate } from '../../common/utils'
 
 import './my.scss'
 
@@ -44,11 +45,12 @@ export default () => {
         right: item.finishDate,
         func: generateCertificate
       })
-      item.ifFinish && courseL.push({
+      courseL.push({
         id: item.classId,
         title: item.className,
         right: item.finishDate,
-        func: goUnitDetail
+        func: goUnitDetail,
+        rightIcon:true,
       })
     })
     console.log(newList)
@@ -166,6 +168,7 @@ export default () => {
         item.active = false
       })
       list[idx].active = true;
+      console.log(list)
       return list
     })
     // Taro.navigateTo({
@@ -177,11 +180,6 @@ export default () => {
     Taro.navigateTo({
       url: '/pages/redeem/redeem'
     })
-  }
-
-  const parseDate = (stamp) => {
-    const date = new Date(stamp)
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   }
 
   const downloadDoc = (source) => {
@@ -207,7 +205,7 @@ export default () => {
       <View className="card">
         <View className="expire-title">Full PACK Subscriptions</View>
         <View className="expire-sec">
-          <View>有效期至   {parseDate(user.endMemberTime)}</View>
+          <View>有效期至   {generateDate(user.endMemberTime)}</View>
           <View className="button redeem" onClick={() => goRedeem()}>续约我的会员</View>
         </View>
       </View>
@@ -232,10 +230,11 @@ export default () => {
     {title !== '材料列表' && <View className="section">
       <View className="section-title">{myMap[title].subtitle}</View>
       {pageList && pageList.map((row, idx) =>
-        <View className={row.active ? "row active" : "row"} key={row.title} onClick={() => { setActive(row, idx); row.func(row) }}>
+        <View className={row.active ? "row active-label" : "row"} key={row.title} onClick={() => { setActive(row, idx); row.func(row) }}>
           {row.img && <Image className="icon" src={row.active ? row.activeImg : row.img}></Image>}
           <View style="flex:1;">{row.title}</View>
           <View>{row.right}</View>
+          {row.rightIcon && <Image style='width:10px;margin-left:20px;' mode="widthFix" src={row.active ? nextIconWhite : nextIcon}></Image>}
         </View>)}
     </View>}
   </View>)

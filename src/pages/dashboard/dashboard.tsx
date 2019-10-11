@@ -2,6 +2,7 @@ import Taro, { useState, useEffect, useDidShow, useContext } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import Footer from '../../components/footer/footer';
 import nextIcon from '../../images/next-icon.png'
+import nextIconWhite from '../../images/white-next-icon.png'
 import topImg from '../../images/Group.png'
 import botImg from '../../images/C-BG2.png'
 import globalContext from '../../context'
@@ -33,7 +34,7 @@ const Dashboard = () => {
       ]
     }
   ]
-  const [list,setList] = useState(dashboardList);
+  const [list, setList] = useState(dashboardList);
   const userQuery = useQuery('api/public/api/v1/fetchStaffById')
   const [user, setUser] = useState(Taro.getStorageSync('user'))
 
@@ -41,43 +42,54 @@ const Dashboard = () => {
 
   useDidShow(() => {
     const queryUser = context.user || user
-    if(queryUser){
+    if (queryUser) {
       userQuery.request({
-        method:'POST',
-        data:{
-          id:queryUser.id
+        method: 'POST',
+        data: {
+          id: queryUser.id
         }
       });
     }
   })
-  useEffect(()=>{
+  useEffect(() => {
     if (!userQuery.isLoading) {
       setUser(userQuery.data[0])
       context.user = userQuery.data[0]
-      setList(oldList=>{
-        oldList[0].list = userQuery.data[0].classProcess.map(item=>({
-          label:item.className,
-          id:item.classId,
-          progress:`${item.classProcess}%`,
+      setList(oldList => {
+        oldList[0].list = userQuery.data[0].classProcess.map(item => ({
+          label: item.className,
+          id: item.classId,
+          progress: `${item.classProcess}%`,
           url: `/pages/courseList/courseList?id=${item.classId}&course=${JSON.stringify(item)}`
         }))
         return oldList
       })
     }
-    
-  },[userQuery.data])
 
-  const goDetail = (item) => {
-    if(item.label == '登出'){
-      Taro.removeStorageSync('user')
-      Taro.reLaunch({
-        url:item.url
+  }, [userQuery.data])
+
+  const goDetail = (item, index, idx) => {
+    setList(list => {
+      list.forEach(item=>{
+        item.list.forEach(i=>{
+          i.active = false
+        })
       })
-      return
-    }
-    Taro.navigateTo({
-      url: `${item.url}?title=${item.label}`
+      list[index].list[idx].active = true
+      return list
     })
+    setTimeout(()=>{
+      if (item.label == '登出') {
+        Taro.removeStorageSync('user')
+        Taro.reLaunch({
+          url: item.url
+        })
+        return
+      }
+      Taro.navigateTo({
+        url: `${item.url}?title=${item.label}`
+      })
+    },500)
   }
   return (
     <View className="background">
@@ -91,9 +103,9 @@ const Dashboard = () => {
         <View key={item.title} className="section">
           <View className="section-title">{item.title}</View>
           {item.list.map((row, idx) =>
-            <View className="row" key={row.label} onClick={() => goDetail(row)}>
+            <View className={row.active ? "row active-label" : "row"} key={row.label} onClick={() => goDetail(row, index, idx)}>
               <View>{row.label}</View>
-              {row.progress ||<Image mode="widthFix" style='width:10px' src={nextIcon}></Image>}
+              {row.progress || <Image mode="widthFix" style='width:10px' src={row.active ? nextIconWhite : nextIcon}></Image>}
             </View>)}
         </View>
       ))}

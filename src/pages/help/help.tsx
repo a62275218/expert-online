@@ -6,13 +6,12 @@ import Footer from "../../components/footer/footer";
 import botImg from "../../images/EOT-Clear.png"
 import bg from '../../images/F-4-BG.png'
 
-Taro.setNavigationBarTitle({
-    title: '帮助'
-})
-
 import './help.scss'
 
 const Help = (props) => {
+    Taro.setNavigationBarTitle({
+        title: '帮助'
+    })
 
     const [type, setType] = useState('')
 

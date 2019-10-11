@@ -15,9 +15,11 @@ const PurchaseMember = (props) => {
 
     const goIntro = ()=>{
         setType('person')
-        Taro.navigateTo({
-            url: '/pages/intro/intro'
-          })
+        setTimeout(()=>{
+            Taro.navigateTo({
+                url: '/pages/intro/intro'
+              })
+        },500)  
     }
 
     return (
