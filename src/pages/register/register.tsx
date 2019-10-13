@@ -12,7 +12,7 @@ import request from '../../common/request'
 
 const Register = () => {
   Taro.setNavigationBarTitle({
-    title: "购买会员"
+    title: "注册会员"
   });
   const [pswShow, setPswShow] = useState(false);
   const [rePswShow, setRePswShow] = useState(false);

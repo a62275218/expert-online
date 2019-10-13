@@ -138,8 +138,9 @@ class Login extends Component {
             </View>
           </View>
         </View>
-
+        <View style="margin-bottom:-20px;">
         <Footer></Footer>
+        </View>
         <Image
           src={botImg}
           mode="widthFix"
