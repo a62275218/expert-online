@@ -31,13 +31,6 @@ export default () => {
     const newList = [];
     const courseL = [];
     user.classProcess.forEach(item => {
-      // item.ifFinish && newList.push({
-      //   img: downloadImg,
-      //   activeImg: whitedownImg,
-      //   title: item.className,
-      //   right: item.finishDate,
-      //   func: generateCertificate
-      // })
       item.ifFinish && newList.push({
         img: downloadImg,
         activeImg: whitedownImg,
@@ -45,7 +38,7 @@ export default () => {
         right: item.finishDate,
         func: generateCertificate
       })
-      courseL.push({
+      item.ifFinish && courseL.push({
         id: item.classId,
         title: item.className,
         right: item.finishDate,
@@ -145,10 +138,6 @@ export default () => {
     if (!queryHistory.isLoading) {
       console.log(queryHistory.data)
       setPageList(queryHistory.data.map(item => ({
-        // title:(<View>
-        //   <View>FULL PACK Subscriptions</View>
-        //   <View>{'$'+item.price}</View>
-        // </View>),
         title: `$${item.price}   FULL PACK Subscriptions`,
         right: item.date
       })))

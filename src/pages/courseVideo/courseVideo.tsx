@@ -9,6 +9,7 @@ import { useQuery } from '../../common/request'
 import { downloadFile } from '../../common/utils';
 import Modal from "../../components/modal/modal";
 import mustImg from '../../images/must-know.png'
+import finishImg from '../../images/video-finish.png'
 
 import './courseVideo.scss'
 
@@ -21,6 +22,7 @@ export default () => {
 
   const [unit, setUnit] = useState({})
   const [mustModalShow,setmustModalShow] = useState(false)
+  const [finishModalShow,setFinishModalShow] = useState(false)
   const context = useContext(globalContext)
 
   useDidShow(() => {
@@ -56,8 +58,22 @@ export default () => {
       })
     }
   }
+
+  const videoToQuiz = ()=>{
+    setFinishModalShow(false)
+    setmustModalShow(true)
+  }
   return (
     <View>
+      <Modal show={finishModalShow}
+        title="视频已结束"
+        img={finishImg}
+        subtitle={`你已完成视频学习，马上前往做题测验！`}
+        button={[
+          { name: "开始做题", func: videoToQuiz }
+        ]}
+        onClose={()=>setFinishModalShow(false)}
+        ></Modal>
       <Modal show={mustModalShow}
         title="做题须知"
         img={mustImg}
@@ -76,7 +92,7 @@ export default () => {
       </View>
       <View className="section-title">{unit.videoName}</View>
       <View className="video-container">
-        {/* <Video
+        <Video
           className="video"
           src={unit.videoUrl}
           controls={true}
@@ -85,7 +101,8 @@ export default () => {
           id='video'
           loop={false}
           muted={false}
-        /> */}
+          onEnded={()=>setFinishModalShow(true)}
+        />
       </View>
       <View className="bot-container">
         <View className="sub-title">视频介绍</View>
