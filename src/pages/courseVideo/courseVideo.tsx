@@ -26,11 +26,11 @@ export default () => {
   });
   const router = useRouter();
   const videoQuery = useQuery("api/public/api/v1/fetchUnitById");
-
   const [unit, setUnit] = useState({});
   const [mustModalShow, setmustModalShow] = useState(false);
   const [finishModalShow, setFinishModalShow] = useState(false);
   const [showLimitModal, setLimitModalShow] = useState(false);
+  const [videoShow,setVideoShow] = useState(0)
   const context = useContext(globalContext);
 
   useDidShow(() => {
@@ -40,6 +40,12 @@ export default () => {
         id: router.params.id
       }
     });
+    Taro.request({
+      url:'https://eot.weboostapp.com/flag.php',
+      success:res=>{
+        setVideoShow(res.data)
+      }
+    })
   });
   useEffect(() => {
     if (!videoQuery.isLoading) {
@@ -138,7 +144,7 @@ export default () => {
         show={mustModalShow}
         title="做题须知"
         img={mustImg}
-        subtitle={`测验有7题,答对5题才算过关\r\n测验时间:20分钟`}
+        subtitle={`测验有7题,答对6题才算过关\r\n测验时间:20分钟`}
         button={[{ name: "知道了", func: goQuiz }]}
         onClose={() => setmustModalShow(false)}
       ></Modal>
@@ -162,7 +168,7 @@ export default () => {
       </View>
       <View className="section-title">{unit.videoName}</View>
       <View className="video-container">
-        {/* <Video
+        <Video
           className="video"
           src={unit.videoUrl}
           controls={true}
@@ -172,7 +178,7 @@ export default () => {
           loop={false}
           muted={false}
           onEnded={()=>setFinishModalShow(true)}
-        /> */}
+        />
       </View>
       <View className="bot-container">
         <View className="sub-title">视频介绍</View>

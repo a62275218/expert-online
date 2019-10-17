@@ -14,6 +14,9 @@ import "./changeAcc.scss";
 export default () => {
   const router = useRouter();
   const { subtitle } = router.params;
+  Taro.setNavigationBarTitle({
+    title: subtitle
+  })
 
   const [pswShow, setPswShow] = useState(false);
   const [rePswShow, setRePswShow] = useState(false);
@@ -28,7 +31,10 @@ export default () => {
   const pswQuery = useQuery("api/public/api/v1/changeStaffPassword");
   const phoneQuery = useQuery("api/public/api/v1/changeStaffPhone");
 
+
+
   const changePsw = () => {
+
     let valid = true;
     if (password.length < 8) {
       valid = false;

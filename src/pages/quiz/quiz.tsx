@@ -14,6 +14,7 @@ import failImg from "../../images/test-fail.png";
 import finishImg from "../../images/finish.png";
 import downloadImg from "../../images/download-w.png";
 import replay from "../../images/reply-w.png";
+import replayBlue from '../../images/replay_blue.jpg'
 import globalContext from "../../context";
 import correctImg from "../../images/correct.png";
 import incorrectImg from "../../images/incorrect.png";
@@ -227,7 +228,7 @@ export default () => {
     }, 0);
     setCorrect(count);
     const date = new Date();
-    if (count >= 5) {
+    if (count >= 6) {
       doneList =
         course.unitDone.indexOf(context.unit.id) > -1
           ? course.unitDone
@@ -343,9 +344,9 @@ export default () => {
         show={result === "fail"}
         title="测验失败"
         img={failImg}
-        subtitle={`答对${correctCount}题!总共答对5题才算通过哟！`}
+        subtitle={`答对${correctCount}题!总共答对6题才算通过哟！`}
         button={[
-          { name: "再看一次视频", func: goVideo, img: replay },
+          { name: "再看一次视频", func: goVideo, img: replayBlue,activeImg:replay },
           { name: "再做一次题目", func: redo },
           { name: "我的做题结果", func: showResult }
         ]}

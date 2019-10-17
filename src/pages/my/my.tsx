@@ -89,18 +89,18 @@ export default () => {
       list.map(item => {
         item.active = false;
       });
-      list.forEach(item=>{
-        if(item.key === row.key){
+      list.forEach(item => {
+        if (item.key === row.key) {
           item.active = true;
         }
       })
       return list;
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       Taro.navigateTo({
         url: `/pages/changeAcc/changeAcc?subtitle=${row.key}`
       });
-    },500)
+    }, 500)
   };
 
   const generateCertificate = row => {
@@ -144,13 +144,13 @@ export default () => {
         },
         {
           title: user.phone,
-          key:'修改手机',
+          key: '修改手机',
           rightIcon: true,
           func: changeAcc
         },
         {
           title: "修改密码",
-          key:'修改密码',
+          key: '修改密码',
           rightIcon: true,
           func: changeAcc
         }
@@ -185,15 +185,17 @@ export default () => {
     }
   }, [unitQuery.data]);
 
-  const setActive = (detail, idx) => {
+  const setActive = (row, idx) => {
     setPageList(list => {
       list.map(item => {
         item.active = false;
       });
       list[idx].active = true;
-      console.log(list);
       return list;
     });
+    setTimeout(() => {
+      row.func(row);
+    }, 500)
     // Taro.navigateTo({
     //   url: '/pages/my/my'
     // })
@@ -230,7 +232,7 @@ export default () => {
           <View className="card">
             <View className="expire-title">Full PACK Subscriptions</View>
             <View className="expire-sec">
-              <View>有效期至 {generateDate(user.endMemberTime*1000)}</View>
+              <View>有效期至 {generateDate(user.endMemberTime * 1000)}</View>
               <View className="button redeem" onClick={() => goRedeem()}>
                 续约我的会员
               </View>
@@ -271,9 +273,6 @@ export default () => {
                 key={row.title}
                 onClick={() => {
                   setActive(row, idx);
-                  setTimeout(()=>{
-                    row.func(row);
-                  },500)
                 }}
               >
                 {row.img && (
