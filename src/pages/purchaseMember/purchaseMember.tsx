@@ -13,13 +13,11 @@ const PurchaseMember = (props) => {
 
     const [type, setType] = useState('')
 
-    const goIntro = ()=>{
+    const goIntro = () => {
         setType('person')
-        setTimeout(()=>{
-            Taro.navigateTo({
-                url: '/pages/intro/intro'
-              })
-        },500)  
+        Taro.navigateTo({
+            url: '/pages/intro/intro'
+        })
     }
 
     return (

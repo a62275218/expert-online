@@ -197,11 +197,12 @@ export default () => {
           ))}
         <View
           className="button"
-          style="margin:40px 0;"
+          style="margin:20px 0;"
           onClick={() => validateStart()}
         >
           开始做题
         </View>
+        <View style="height:40px;">  </View>
       </View>
     </View>
   );

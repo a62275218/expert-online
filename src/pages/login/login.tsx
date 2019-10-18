@@ -23,7 +23,7 @@ class Login extends Component {
       title: "登录"
     });
     const [pswShow, setPswShow] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
     const [expireModal, setexpireModal] = useState(false);
     const [forgotPswModal, setForgotPswModal] = useState(false);
 
@@ -31,10 +31,10 @@ class Login extends Component {
     const [password, setPassword] = useState('')
 
     const context = useContext(globalContext)
-    
+
     useEffect(() => {
       const user = Taro.getStorageSync('user');
-      if(user){
+      if (user) {
         console.log('已登录')
         Taro.reLaunch({
           url: "/pages/dashboard/dashboard"
@@ -45,38 +45,44 @@ class Login extends Component {
 
     const goPurchase = () => {
       Taro.navigateTo({
-        url: "/pages/purchaseMember/purchaseMember"
+        url: "/pages/redeem/redeem"
       });
     };
     const closeForgotPsw = () => {
       setForgotPswModal(false);
     };
     const login = async () => {
-      console.log(email)
-      console.log(password)
-      if(!email || !password){
+      if (!email || !password) {
         Taro.showToast({
           title: '请输入用户名和密码',
           icon: 'none'
         })
         return;
       }
-      
-      let userInfo = await request('api/public/api/v1/wxLogin', {
-        method: 'POST',
-        data: {
-          email,
-          password:md5(password)
+      try {
+        let userInfo = await request('api/public/api/v1/wxLogin', {
+          method: 'POST',
+          data: {
+            email,
+            password: md5(password)
+          }
+        }, '登陆中')
+        if (userInfo) {
+          setError('')
+          Taro.setStorageSync('user', userInfo)
+          context.user = userInfo;
+          const today = new Date();
+          if (userInfo.endMemberTime * 1000 < Date.parse(today)){
+            setexpireModal(true)
+            return
+          }
+          Taro.reLaunch({
+            url: "/pages/dashboard/dashboard"
+          });
         }
-      }, '登陆中')
-      console.log(userInfo)
-      if(userInfo){
-        Taro.setStorageSync('user',userInfo)
-        Taro.reLaunch({
-          url: "/pages/dashboard/dashboard"
-        });
+      } catch (err) {
+        setError(err)
       }
-      console.log(Taro.getStorageSync('user'))
     };
     return (
       <View className="bg" style="display:flex;flex-direction:column;">
@@ -102,7 +108,7 @@ class Login extends Component {
           <View className="login">
             <View className="title">登入账号</View>
             <View className="error" style={error ? "" : "visibility:hidden"}>
-              邮箱或密码不正确，请再输入一次
+              {error}
             </View>
             <View className="input">
               <View>邮箱</View>
@@ -139,7 +145,7 @@ class Login extends Component {
           </View>
         </View>
         <View style="margin-bottom:-20px;">
-        <Footer></Footer>
+          <Footer></Footer>
         </View>
         <Image
           src={botImg}

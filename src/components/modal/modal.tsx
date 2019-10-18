@@ -5,7 +5,7 @@ import "./modal.scss";
 
 function Modal(props) {
   const [show, setShow] = useState(props.show);
-  const [button,setBtn] = useState(props.button);
+  const [button, setBtn] = useState(props.button);
   useEffect(() => {
     setShow(props.show);
   }, [props.show]);
@@ -17,19 +17,17 @@ function Modal(props) {
   const Remainder = (
     <View style="flex:1;width:100%" onClick={() => handleClose()}></View>
   );
-  const handleClick = (idx,func)=>{
-    if(button.length>1){
-      setBtn(btn=>{
-        btn.forEach(item=>{
+  const handleClick = (idx, func) => {
+    if (button.length > 1) {
+      setBtn(btn => {
+        btn.forEach(item => {
           item.active = false
         })
         btn[idx].active = true
         return btn
       })
-      setTimeout(()=>{
-        func()
-      },500)
-    }else{
+      func()
+    } else {
       func()
     }
   }
@@ -46,13 +44,13 @@ function Modal(props) {
               className="center-img"
             ></Image>
             <View className="subtitle">{props.subtitle}</View>
-            {button.map((item,idx) => (
-              <View key={item.name} className={!item.active && button.length>1?"button white-btn":"button"} onClick={() => handleClick(idx,item.func)}>
-                <Image className="icon-img" src={item.active?item.activeImg:item.img}></Image>
+            {button.map((item, idx) => (
+              <View key={item.name} className={!item.active && button.length > 1 ? "button white-btn" : "button"} onClick={() => handleClick(idx, item.func)}>
+                <Image className="icon-img" src={item.active ? item.activeImg : item.img}></Image>
                 {item.name}
               </View>
             ))}
-            <View className="bottom-txt" onClick={()=>props.bottom.func()}>{props.bottom.text}</View>
+            <View className="bottom-txt" onClick={() => props.bottom.func()}>{props.bottom.text}</View>
           </View>
           {Remainder}
         </View>

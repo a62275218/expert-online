@@ -1,4 +1,4 @@
-import Taro, { useContext, useState } from "@tarojs/taro";
+import Taro, { useContext, useState, useEffect } from "@tarojs/taro";
 import { View, Image, Input } from "@tarojs/components";
 import eyeImg from "../../images/EYE-ICON.png";
 import eyeImgClose from "../../images/EYE-ICON-CLOSE.png";
@@ -11,9 +11,7 @@ import globalContext from '../../context';
 import request from '../../common/request'
 
 const Register = () => {
-  Taro.setNavigationBarTitle({
-    title: "注册会员"
-  });
+
   const [pswShow, setPswShow] = useState(false);
   const [rePswShow, setRePswShow] = useState(false);
 
@@ -31,7 +29,15 @@ const Register = () => {
   const [pswErr, setPswErr] = useState(false)
   const [rePswErr, setRePswErr] = useState(false)
 
+  const [error, setError] = useState('');
+
   const context = useContext(globalContext)
+
+  useEffect(() => {
+    Taro.setNavigationBarTitle({
+      title: "注册会员"
+    });
+  }, [])
 
   const validateAndGo = async () => {
     let valid = true;
@@ -64,37 +70,41 @@ const Register = () => {
 
     setEmailValidErr(!new RegExp(mailPattern).test(email))
 
-    if(!valid){
+    if (!valid) {
       return
     }
 
-    const userRes = await request('api/public/api/v1/wxRegisterStaff', {
-      method: 'POST',
-      data: {
-        firstName,
-        lastName,
-        phone,
-        email,
-        password:md5(password)
+    try {
+      const userRes = await request('api/public/api/v1/wxRegisterStaff', {
+        method: 'POST',
+        data: {
+          firstName,
+          lastName,
+          phone,
+          email,
+          password: md5(password)
+        }
+      })
+      if (Array.isArray(userRes)) {
+        setError('')
+        Taro.setStorageSync('user', userRes[0])
+        context.user = userRes[0];
+        Taro.showToast({
+          title: '注册成功'
+        })
+        setTimeout(() => {
+          Taro.navigateTo({
+            url: "/pages/redeem/redeem"
+          });
+        }, 2000)
+      } else {
+        Taro.showToast({
+          title: '注册失败',
+          icon: 'none'
+        })
       }
-    })
-    console.log(userRes)
-    if (Array.isArray(userRes)) {
-      Taro.setStorageSync('user',userRes[0])
-      context.user = userRes[0];
-      Taro.showToast({
-        title: '注册成功'
-      })
-      setTimeout(() => {
-        Taro.navigateTo({
-          url: "/pages/redeem/redeem"
-        });
-      },2000)
-    }else{
-      Taro.showToast({
-        title: '注册失败',
-        icon:'none'
-      })
+    } catch (err) {
+      setError(err)
     }
   }
 
@@ -157,7 +167,11 @@ const Register = () => {
               placeholder="请再次确认"
             ></Input>
           </View>
+          <View></View>
           <View className="error" style={rePswErr ? '' : 'visibility:hidden'}>两次输入密码不一致</View>
+          <View className="error" style={error ? "text-align:center;" : "text-align:center;visibility:hidden"}>
+            {error}
+          </View>
           <View className="button" onClick={() => validateAndGo()}>确认</View>
         </View>
       </View>

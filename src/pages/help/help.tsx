@@ -25,7 +25,7 @@ const Help = (props) => {
     const goCompanySite = ()=>{
         setType('company')
         Taro.navigateTo({
-            url:"/pages/webview/webview"
+            url:"/pages/webview/webview?link=https://www.expertonlinetraining.com/&title=Expert Online Training"
         })
     }
 

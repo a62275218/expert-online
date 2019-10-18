@@ -23,10 +23,11 @@ export default (uri: any, config?: any, loading?: any) => {
                     if (res.data.code == 0) {
                         resolve(res.data.data || res.data)
                     } else {
-                        Taro.showToast({
-                            title: res.data.msg || '请求失败',
-                            icon: 'none'
-                        })
+                        reject(res.data.msg)
+                        // Taro.showToast({
+                        //     title: res.data.msg || '请求失败',
+                        //     icon: 'none'
+                        // })
                     }
                 } else {
                     Taro.showToast({

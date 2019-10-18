@@ -1,13 +1,15 @@
 import { WebView } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro,{useRouter} from '@tarojs/taro'
 
 import './webview.scss'
 
 export default ()=>{
+    const router = useRouter()
+    console.log(router.params)
     Taro.setNavigationBarTitle({
-        title:'Expert Online Training'
+        title:router.params.title
     })
     return (
-        <WebView src="https://www.expertonlinetraining.com/"></WebView>
+        <WebView src={router.params.link}></WebView>
     )
 }

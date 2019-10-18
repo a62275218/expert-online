@@ -49,6 +49,14 @@ const Dashboard = () => {
   const context = useContext(globalContext);
 
   useDidShow(() => {
+    setList(list => {
+      list.forEach(item => {
+        item.list.forEach(i => {
+          i.active = false;
+        });
+      });
+      return list;
+    });
     const queryUser = context.user || user;
     if (queryUser) {
       userQuery.request({

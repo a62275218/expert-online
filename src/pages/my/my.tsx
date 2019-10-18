@@ -96,11 +96,9 @@ export default () => {
       })
       return list;
     });
-    setTimeout(() => {
-      Taro.navigateTo({
-        url: `/pages/changeAcc/changeAcc?subtitle=${row.key}`
-      });
-    }, 500)
+    Taro.navigateTo({
+      url: `/pages/changeAcc/changeAcc?subtitle=${row.key}`
+    });
   };
 
   const generateCertificate = row => {

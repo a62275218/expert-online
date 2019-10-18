@@ -32,7 +32,12 @@ export default () => {
     title: "开始学习"
   });
   const router = useRouter();
-  const context = router.params.context && Taro.getStorageSync('context') || JSON.parse(router.params.context) ;
+  let context;
+  if(Taro.getStorageSync('context')){
+    context = Taro.getStorageSync('context')
+  }else{
+    context = router.params.context?JSON.parse(router.params.context):{}
+  }
   const [quiz] = useState(Taro.getStorageSync('quiz'));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [options, setOptions] = useState([]);
@@ -68,13 +73,14 @@ export default () => {
         setCount(c => c - 1)
       }, 1000)
     }
+    console.log(router.params.showRes)
     if (router.params.showRes) {
       setShowRes(true);
       setAnserMap(JSON.parse(router.params.map));
     }
   });
-  useDidHide(()=>{
-    Taro.setStorageSync('timer',count)
+  useDidHide(() => {
+    Taro.setStorageSync('timer', count)
     clearInterval(timer.current)
   })
   useEffect(() => {
@@ -141,7 +147,7 @@ export default () => {
       if (dateDiff) {
         console.log('清除次数')
         Taro.removeStorageSync('attempts')
-        attemps=[]
+        attemps = []
       }
       Taro.setStorageSync('date', dateString)
       let found = false;
@@ -211,7 +217,7 @@ export default () => {
     submitResult();
   };
 
-  const submitResult = async() => {
+  const submitResult = async () => {
     //Taro.setStorageSync('timer',120)
     const excced = await judgeTimes();
     if (excced) {
@@ -253,10 +259,16 @@ export default () => {
     } else {
       const doneList = course.unitDone;
       const successIndex = doneList.indexOf(context.unit.id);
-      if (successIndex > -1) {
-        doneList.splice(successIndex, 1);
+      let ifFinish = 0, progress;
+      if (doneList.length == course.countUnitNum) {
+        ifFinish = 1;
+        progress = '100'
+      } else {
+        if (successIndex > -1) {
+          doneList.splice(successIndex, 1);
+        }
+        progress = Math.floor((doneList.length / course.countUnitNum) * 100);
       }
-      progress = Math.floor((doneList.length / course.countUnitNum) * 100);
       classProcessObj = {
         classId: course.classId,
         classProcess: progress,
@@ -265,7 +277,7 @@ export default () => {
           course.unitFail.indexOf(context.unit.id) > -1
             ? course.unitFail
             : course.unitFail.concat(context.unit.id),
-        ifFinish: 0
+        ifFinish
       };
     }
     submitQuery.request({
@@ -293,13 +305,13 @@ export default () => {
 
   const goVideo = () => {
     Taro.reLaunch({
-      url:`/pages/courseVideo/courseVideo?id=${context.unit.id}`
+      url: `/pages/courseVideo/courseVideo?id=${context.unit.id}`
     });
   };
 
-  const redo = async() => {
+  const redo = async () => {
     Taro.removeStorageSync('timer')
-    Taro.setStorageSync('context',context)
+    Taro.setStorageSync('context', context)
     const excced = await judgeTimes();
     if (excced) {
       setResult("limit")
@@ -312,7 +324,7 @@ export default () => {
 
   const showResult = () => {
     Taro.redirectTo({
-      url: `/pages/quiz/quiz?context=${JSON.stringify(context)}&showRes=true&map=${JSON.stringify(answerMap)}`
+      url: `/pages/quiz/quiz?showRes=true&map=${JSON.stringify(answerMap)}`
     });
   };
 
@@ -346,7 +358,7 @@ export default () => {
         img={failImg}
         subtitle={`答对${correctCount}题!总共答对6题才算通过哟！`}
         button={[
-          { name: "再看一次视频", func: goVideo, img: replayBlue,activeImg:replay },
+          { name: "再看一次视频", func: goVideo, img: replayBlue, activeImg: replay },
           { name: "再做一次题目", func: redo },
           { name: "我的做题结果", func: showResult }
         ]}
@@ -449,7 +461,7 @@ export default () => {
           </View>
           {
             showRes && currentIndex + 1 == quiz.length &&
-            <View className="button" onClick={()=>backToDashboard()}>
+            <View className="button" onClick={() => backToDashboard()}>
               返回个人中心
             </View>
           }
