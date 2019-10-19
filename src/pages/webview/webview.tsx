@@ -1,15 +1,18 @@
 import { WebView } from '@tarojs/components'
-import Taro,{useRouter} from '@tarojs/taro'
+import Taro,{useRouter,useDidShow,useState} from '@tarojs/taro'
 
 import './webview.scss'
 
 export default ()=>{
     const router = useRouter()
-    console.log(router.params)
+    const [link,setLink] = useState(Taro.getStorageSync('link') || router.params.link)
     Taro.setNavigationBarTitle({
         title:router.params.title
     })
+    useDidShow(()=>{
+        setLink(Taro.getStorageSync('link'))
+    })
     return (
-        <WebView src={router.params.link}></WebView>
+        <WebView src={link}></WebView>
     )
 }

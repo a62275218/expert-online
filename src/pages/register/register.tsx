@@ -70,6 +70,10 @@ const Register = () => {
 
     setEmailValidErr(!new RegExp(mailPattern).test(email))
 
+    if(!new RegExp(mailPattern).test(email)){
+      valid = false
+    }
+
     if (!valid) {
       return
     }

@@ -15,13 +15,13 @@ import finishImg from "../../images/finish.png";
 import downloadImg from "../../images/download-w.png";
 import replay from "../../images/reply-w.png";
 import replayBlue from '../../images/replay_blue.jpg'
-import globalContext from "../../context";
+import quitImg from "../../images/quit.jpg";
 import correctImg from "../../images/correct.png";
 import incorrectImg from "../../images/incorrect.png";
 import timerImg from '../../images/timer.png'
 
 import { useQuery } from "../../common/request";
-import { downloadFile } from "../../common/utils";
+import { downloadFile, generateDate } from "../../common/utils";
 
 import "./quiz.scss";
 
@@ -32,16 +32,24 @@ export default () => {
     title: "开始学习"
   });
   const router = useRouter();
-  let context;
-  if(Taro.getStorageSync('context')){
+  let context,
+    trial;
+  if (Taro.getStorageSync('context')) {
     context = Taro.getStorageSync('context')
+  } else {
+    context = router.params.context ? JSON.parse(router.params.context) : {}
+  }
+  if(Taro.getStorageSync('trial')){
+    trial = true
   }else{
-    context = router.params.context?JSON.parse(router.params.context):{}
+    trial = false
   }
   const [quiz] = useState(Taro.getStorageSync('quiz'));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [options, setOptions] = useState([]);
+  const [quitModalShow, setQuitModalShow] = useState(false)
   const [count, setCount] = useState(20 * 60);
+  //const [trial, setTrial] = useState('');
   const timer = useRef({})
   const [answerMap, setAnserMap] = useState(
     quiz &&
@@ -67,6 +75,7 @@ export default () => {
   }, [currentIndex]);
 
   useDidShow(() => {
+    const localTrial = Taro.getStorageSync('trial')
     setCount(Taro.getStorageSync('timer') || (20 * 60));
     if (!router.params.showRes) {
       timer.current = setInterval(() => {
@@ -125,8 +134,7 @@ export default () => {
               data: {
                 name: context.user.lastName + " " + context.user.firstName,
                 className: context.course.className,
-                finishDate: `${date.getFullYear()}-${date.getMonth() +
-                  1}-${date.getDate()}`
+                finishDate: generateDate(date)
               }
             });
           }
@@ -218,21 +226,31 @@ export default () => {
   };
 
   const submitResult = async () => {
+    let count = correctCount
+    count = answerMap.reduce((count, current) => {
+      return current.correct == current.select ? count + 1 : count;
+    }, 0);
+    setCorrect(count);
     //Taro.setStorageSync('timer',120)
+    if (trial) {
+      if (count >= 6) {
+        setResult('pass')
+      } else {
+        setResult('fail')
+      }
+      return
+    }
+    let
+      course = context.course,
+      doneList = course.unitDone,
+      progress,
+      classProcessObj;
+
     const excced = await judgeTimes();
     if (excced) {
       setResult("limit")
       return
     }
-    let count = correctCount,
-      course = context.course,
-      doneList = course.unitDone,
-      progress,
-      classProcessObj;
-    count = answerMap.reduce((count, current) => {
-      return current.correct == current.select ? count + 1 : count;
-    }, 0);
-    setCorrect(count);
     const date = new Date();
     if (count >= 6) {
       doneList =
@@ -253,7 +271,7 @@ export default () => {
         classProcess: progress + "",
         finishDate:
           progress == 100
-            ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+            ? generateDate(date)
             : ""
       };
     } else {
@@ -299,17 +317,27 @@ export default () => {
 
   const backToDashboard = () => {
     Taro.reLaunch({
-      url: "/pages/dashboard/dashboard"
+      url: trial ? "/pages/login/login" : "/pages/dashboard/dashboard"
     });
   };
 
   const goVideo = () => {
     Taro.reLaunch({
-      url: `/pages/courseVideo/courseVideo?id=${context.unit.id}`
+      url: trial ? '/pages/courseVideo/courseVideo?trial=true' : `/pages/courseVideo/courseVideo?id=${context.unit.id}`
     });
   };
 
+  const closeQuit = () => {
+    setQuitModalShow(false)
+  }
+
   const redo = async () => {
+    if (trial) {
+      Taro.redirectTo({
+        url: `/pages/quiz/quiz?context=${JSON.stringify(context)}`
+      });
+      return
+    }
     Taro.removeStorageSync('timer')
     Taro.setStorageSync('context', context)
     const excced = await judgeTimes();
@@ -328,8 +356,78 @@ export default () => {
     });
   };
 
+  const resultPage = <View>
+    {
+      quiz.map((item, index) => (
+        <View className="question-wrapper">
+          <View className="top-right">
+            <View className="top-section active">
+              观看视频
+              <Image
+                src={nextImg}
+                mode="widthFix"
+                className="sec-img"
+              ></Image>
+            </View>
+            <View className="top-section active">
+              做题测验
+              <Image src={nextImg} mode="widthFix" className="sec-img"></Image>
+            </View>
+            <View>完成</View>
+          </View>
+          <View className="section-title">
+            <View>{item.QuizNameTrans}</View>
+          </View>
+          <View className="question">
+            {index + 1} {item.questionTrans}
+          </View>
+          {item.questionAnswerSelectionTrans.split("|").map((option, idx) => {
+            return (
+              <View
+                className="answer-item"
+                key={option}
+              >
+                <View
+                  className={
+                    answerMap[index].select == idx
+                      ? "radio-ico selected"
+                      : "radio-ico"
+                  }
+                ></View>
+                <View style="flex:1;">{option}</View>
+                {showRes && answerMap[index].select == idx && (
+                  <Image
+                    className="resImg"
+                    src={
+                      answerMap[index].select ==
+                        answerMap[index].correct
+                        ? correctImg
+                        : incorrectImg
+                    }
+                  ></Image>
+                )}
+              </View>
+            );
+          })}
+          {showRes && (
+            <View className="feedback">
+              {answerMap[index].select == answerMap[index].correct
+                ? quiz[index].questionFeedbackCorrectTrans
+                : quiz[index].questionFeedbackIncorrectTrans}
+            </View>
+          )}
+
+        </View>
+      ))
+    }
+    <View className="button" style="margin:0 20px;width:auto;" onClick={() => backToDashboard()}>
+      返回个人中心
+    </View>
+    <View style="height:40px"></View>
+  </View>
+
   return (
-    <View className="bg">
+    <View className={showRes ? "" : "bg"}>
       <Modal
         show={result === "limit"}
         title="本日尝试次数已到"
@@ -345,9 +443,9 @@ export default () => {
         img={passImg}
         subtitle={`答对${correctCount}题!`}
         button={[
-          { name: "下载课程材料", func: backToDashboard, img: downloadImg }
+          { name: trial ? "返回登陆" : "下载课程材料", func: backToDashboard, img: trial ? '' : downloadImg }
         ]}
-        bottom={{
+        bottom={!trial && {
           text: "之后再下载，返回个人中心",
           func: backToDashboard
         }}
@@ -368,6 +466,16 @@ export default () => {
         }}
       ></Modal>
       <Modal
+        show={quitModalShow}
+        title="确认退出测验?"
+        img={quitImg}
+        button={[
+          { name: "返回继续做题", func: closeQuit },
+          { name: "狠心退出", func: backToDashboard },
+        ]}
+        onClose={() => closeQuit()}
+      ></Modal>
+      <Modal
         show={result === "finish"}
         title="你的课程都完成了"
         img={finishImg}
@@ -382,110 +490,113 @@ export default () => {
       ></Modal>
       <Image src={topImg} mode="widthFix" className="resized-img"></Image>
       <View className="top-left">{context.unit.videoName}</View>
-      <View className="question-wrapper">
-        <View style="flex:1;">
-          <View className="top-right">
-            <View className="top-section active">
-              观看视频
+      {
+        showRes ? resultPage : <View className="question-wrapper">
+          <View style="flex:1;">
+            <View className="top-right">
+              <View className="top-section active">
+                观看视频
               <Image
-                src={nextImg}
-                mode="widthFix"
-                className="sec-img"
-              ></Image>
-            </View>
-            <View className="top-section active">
-              做题测验
-              <Image src={nextImg} mode="widthFix" className="sec-img"></Image>
-            </View>
-            <View>完成</View>
-          </View>
-          <View className="section-title">
-            <View style="flex:1;">{quiz[currentIndex].QuizNameTrans}</View>
-            <View className={count < 120 ? "timer warn" : "timer"} style={showRes ? "visibility:hidden" : ''}>
-              <Image className="timer-img" mode="widthFix" src={timerImg}></Image>{transSec(count)}
-            </View>
-          </View>
-          <View className="question">
-            {currentIndex + 1} {quiz[currentIndex].questionTrans}
-          </View>
-          {options &&
-            options.map((option, index) => {
-              return (
-                <View
-                  className="answer-item"
-                  key={option}
-                  onClick={() => {
-                    showRes ? "" : select(option);
-                  }}
-                >
-                  <View
-                    className={
-                      answerMap[currentIndex].select == index
-                        ? "radio-ico selected"
-                        : "radio-ico"
-                    }
-                  ></View>
-                  <View style="flex:1;">{option}</View>
-                  {showRes && answerMap[currentIndex].select == index && (
-                    <Image
-                      className="resImg"
-                      src={
-                        answerMap[currentIndex].select ==
-                          answerMap[currentIndex].correct
-                          ? correctImg
-                          : incorrectImg
-                      }
-                    ></Image>
-                  )}
-                </View>
-              );
-            })}
-          {showRes && (
-            <View className="feedback">
-              {answerMap[currentIndex].select == answerMap[currentIndex].correct
-                ? quiz[currentIndex].questionFeedbackCorrectTrans
-                : quiz[currentIndex].questionFeedbackIncorrectTrans}
-            </View>
-          )}
-        </View>
-        <View className="action">
-          <View
-            className="button prev"
-            style={currentIndex == 0 ? "visibility:hidden" : ""}
-            onClick={() => setCurrentIndex(idx => judgeIndex("minus", idx))}
-          >
-            上一题
-          </View>
-          <View className="num">
-            {currentIndex + 1}/{quiz.length}
-          </View>
-          {
-            showRes && currentIndex + 1 == quiz.length &&
-            <View className="button" onClick={() => backToDashboard()}>
-              返回个人中心
-            </View>
-          }
-          {currentIndex + 1 == quiz.length ? (
-            !showRes && (
-              <View className="button" onClick={() => submit()}>
-                提交
+                  src={nextImg}
+                  mode="widthFix"
+                  className="sec-img"
+                ></Image>
               </View>
-            )
-          ) : (
-              <View
-                className="button prev"
-                style={
-                  quiz && currentIndex == quiz.length - 1
-                    ? "visibility:hidden"
-                    : ""
-                }
-                onClick={() => setCurrentIndex(idx => judgeIndex("add", idx))}
-              >
-                下一题
+              <View className="top-section active">
+                做题测验
+              <Image src={nextImg} mode="widthFix" className="sec-img"></Image>
+              </View>
+              <View>完成</View>
             </View>
+            <View className="quit-btn button" onClick={() => setQuitModalShow(true)}>退出测试</View>
+            <View className="section-title">
+              <View style="flex:1;">{quiz[currentIndex].QuizNameTrans}</View>
+              <View className={count < 120 ? "timer warn" : "timer"} style={showRes ? "visibility:hidden" : ''}>
+                <Image className="timer-img" mode="widthFix" src={timerImg}></Image>{transSec(count)}
+              </View>
+            </View>
+            <View className="question">
+              {currentIndex + 1} {quiz[currentIndex].questionTrans}
+            </View>
+            {options &&
+              options.map((option, index) => {
+                return (
+                  <View
+                    className="answer-item"
+                    key={option}
+                    onClick={() => {
+                      showRes ? "" : select(option);
+                    }}
+                  >
+                    <View
+                      className={
+                        answerMap[currentIndex].select == index
+                          ? "radio-ico selected"
+                          : "radio-ico"
+                      }
+                    ></View>
+                    <View style="flex:1;">{option}</View>
+                    {showRes && answerMap[currentIndex].select == index && (
+                      <Image
+                        className="resImg"
+                        src={
+                          answerMap[currentIndex].select ==
+                            answerMap[currentIndex].correct
+                            ? correctImg
+                            : incorrectImg
+                        }
+                      ></Image>
+                    )}
+                  </View>
+                );
+              })}
+            {showRes && (
+              <View className="feedback">
+                {answerMap[currentIndex].select == answerMap[currentIndex].correct
+                  ? quiz[currentIndex].questionFeedbackCorrectTrans
+                  : quiz[currentIndex].questionFeedbackIncorrectTrans}
+              </View>
             )}
+          </View>
+          <View className="action">
+            <View
+              className="button prev"
+              style={currentIndex == 0 ? "visibility:hidden" : ""}
+              onClick={() => setCurrentIndex(idx => judgeIndex("minus", idx))}
+            >
+              上一题
+          </View>
+            <View className="num">
+              {currentIndex + 1}/{quiz.length}
+            </View>
+            {
+              showRes && currentIndex + 1 == quiz.length &&
+              <View className="button" onClick={() => backToDashboard()}>
+                返回个人中心
+            </View>
+            }
+            {currentIndex + 1 == quiz.length ? (
+              !showRes && (
+                <View className="button" onClick={() => submit()}>
+                  提交
+              </View>
+              )
+            ) : (
+                <View
+                  className="button prev"
+                  style={
+                    quiz && currentIndex == quiz.length - 1
+                      ? "visibility:hidden"
+                      : ""
+                  }
+                  onClick={() => setCurrentIndex(idx => judgeIndex("add", idx))}
+                >
+                  下一题
+            </View>
+              )}
+          </View>
         </View>
-      </View>
+      }
     </View>
   );
 };

@@ -17,9 +17,7 @@ import { useQuery } from "../../common/request";
 import "./dashboard.scss";
 
 const Dashboard = () => {
-  Taro.setNavigationBarTitle({
-    title: "个人中心"
-  });
+
   const dashboardList = [
     {
       title: "我的课程",
@@ -49,6 +47,10 @@ const Dashboard = () => {
   const context = useContext(globalContext);
 
   useDidShow(() => {
+    Taro.setNavigationBarTitle({
+      title: "个人中心"
+    });
+    setUser(Taro.getStorageSync("user"))
     setList(list => {
       list.forEach(item => {
         item.list.forEach(i => {
@@ -71,6 +73,13 @@ const Dashboard = () => {
     if (!userQuery.isLoading) {
       setUser(userQuery.data[0]);
       context.user = userQuery.data[0];
+      const today = new Date();
+      if (userQuery.data[0].endMemberTime * 1000 < Date.parse(today)) {
+        Taro.reLaunch({
+          url:'/pages/login/login'
+        })
+        return
+      }
       setList(oldList => {
         oldList[0].list = userQuery.data[0].classProcess.map(item => ({
           label: item.className,
@@ -78,7 +87,7 @@ const Dashboard = () => {
           progress: `${item.classProcess}%`,
           url: `/pages/courseList/courseList?id=${
             item.classId
-          }&course=${JSON.stringify(item)}`
+            }&course=${JSON.stringify(item)}`
         }));
         return oldList;
       });

@@ -32,7 +32,7 @@ function Modal(props) {
     }
   }
   return (
-    <View>
+    <View style="height:100%;">
       {show && (
         <View className="mask">
           {Remainder}

@@ -8,7 +8,7 @@ import Slogan from "../../components/slogan/slogan";
 
 export default function Intro() {
   Taro.setNavigationBarTitle({
-    title: "介绍"
+    title: "会员简介"
   });
 
   const goRedeem = () => {

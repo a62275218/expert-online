@@ -22,6 +22,10 @@ export default () => {
   const [rePswShow, setRePswShow] = useState(false);
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
+  const [originalPsw, setOriginalPsw] = useState("");
+  const [originalPswShow, setOriginalPswShow] = useState(false);
+  const [originalPswErr, setOriginalPswErr] = useState("");
+  const [phoneErr, setPhoneErr] = useState("");
   const [pswErr, setPswErr] = useState(false);
   const [rePswErr, setRePswErr] = useState(false);
   const [phone, setPhone] = useState("");
@@ -30,8 +34,6 @@ export default () => {
   const { user } = context;
   const pswQuery = useQuery("api/public/api/v1/changeStaffPassword");
   const phoneQuery = useQuery("api/public/api/v1/changeStaffPhone");
-
-
 
   const changePsw = () => {
 
@@ -47,16 +49,24 @@ export default () => {
     if (!valid) {
       return;
     }
+    
     pswQuery.request({
       method: "POST",
       data: {
         id: user.id,
-        password: md5(password)
+        password: md5(password),
+        originPassword: md5(originalPsw)
       }
     });
   };
 
   const changePhone = () => {
+    if(!phone || phone.length<8){
+      setPhoneErr('手机号长度不足')
+      return
+    }else{
+      setPhoneErr('')
+    }
     phoneQuery.request({
       method: "POST",
       data: {
@@ -83,6 +93,7 @@ export default () => {
 
   useEffect(() => {
     if (!pswQuery.isLoading) {
+      console.log('loaded')
       if (pswQuery.data.code == 0) {
         Taro.showToast({
           title: "修改密码成功"
@@ -92,6 +103,9 @@ export default () => {
             url: "/pages/dashboard/dashboard"
           });
         }, 2000);
+      }else{
+        console.log('error')
+        setOriginalPswErr(true)
       }
     }
   }, [pswQuery.data]);
@@ -106,7 +120,26 @@ export default () => {
       {subtitle == "修改密码" && (
         <View className="card">
           <View className="input">
-            <View>密码</View>
+            <View>旧密码</View>
+            <Image
+              mode="widthFix"
+              className="eye-icon"
+              src={originalPswShow ? eyeImgClose : eyeImg}
+              onClick={() => setOriginalPswShow(!originalPswShow)}
+            ></Image>
+            <Input
+              type="text"
+              value={originalPsw}
+              password={!originalPswShow}
+              onInput={e => setOriginalPsw(e.target.value)}
+              placeholder="请输入您的密码"
+            ></Input>
+          </View>
+          <View className="error" style={originalPswErr ? "" : "visibility:hidden"}>
+            原密码错误
+          </View>
+          <View className="input">
+            <View>新密码</View>
             <Image
               mode="widthFix"
               className="eye-icon"
@@ -125,6 +158,7 @@ export default () => {
             密码长度至少8位
           </View>
           <View className="input">
+            <View>重复新密码</View>
             <Image
               mode="widthFix"
               className="eye-icon"
@@ -161,6 +195,9 @@ export default () => {
               onInput={e => setPhone(e.target.value)}
               placeholder="请输入新的手机号"
             ></Input>
+          </View>
+          <View className="error" style={phoneErr ? "" : "visibility:hidden"}>
+            {phoneErr}
           </View>
           <View className="button" onClick={() => changePhone()}>
             确认修改

@@ -1,4 +1,4 @@
-import Taro, { useState, useContext, useEffect } from "@tarojs/taro";
+import Taro, { useState, useContext, useEffect, useDidShow } from "@tarojs/taro";
 import { View, Image } from "@tarojs/components";
 import Star from "../../images/STAR.png";
 
@@ -12,9 +12,11 @@ import globalContext from '../../context'
 import "./redeem.scss";
 
 const Redeem = () => {
-  Taro.setNavigationBarTitle({
-    title: "购买会员"
-  });
+  useDidShow(() => {
+    Taro.setNavigationBarTitle({
+      title: "购买会员"
+    });
+  })
   const context = useContext(globalContext)
 
   const [successModal, setSuccessModal] = useState(false);
@@ -33,12 +35,13 @@ const Redeem = () => {
         },
         method: 'POST',
         data: {
-          amount: 299,
+          amount: 2990,
           currency: 'USD',
           reference: `${stamp}s14`,
           ipn_url: 'http://eot.weboostapp.com/api/public/api/v1/ipnCallBackSec',
           client_ip: '47.244.180.189',
-          open_id: openIdQuery.data.openid
+          open_id: openIdQuery.data.openid,
+          appid: 'wx1a4b4ceac53ea2fe'
         }
       })
     }
@@ -54,21 +57,22 @@ const Redeem = () => {
           nonceStr: payQuery.data.nonceStr,
           package: payQuery.data.wechatPackage,
           paySign: payQuery.data.paySign,
-          signType:payQuery.data.signType,
+          signType: payQuery.data.signType,
           success(res) {
-            console.log('支付成功'+res)
-           },
+            console.log('支付成功' + res)
+            setSuccessModal(true)
+          },
           fail(res) {
             Taro.showToast({
-              title:'支付失败',
-              icon:'none'
+              title: '支付失败',
+              icon: 'none'
             })
-           }
+          }
         })
-      }else{
+      } else {
         Taro.showToast({
-          title:'支付失败',
-          icon:'none'
+          title: '支付失败',
+          icon: 'none'
         })
       }
     }
@@ -115,7 +119,6 @@ const Redeem = () => {
           name: "开始学习",
           func: goDashboard
         }]}
-        onClose={() => setSuccessModal(false)}
       ></Modal>
       <Image src={bg} className="bg-img"></Image>
       <View className="white-card ">
@@ -126,7 +129,7 @@ const Redeem = () => {
         <View className="line"></View>
         <View className="flex-between">
           <View>需付金额：</View>
-          <View>$299</View>
+          <View>$29.9</View>
         </View>
         <View className="line"></View>
         <View className="button" onClick={() => redeem()}>立即购买</View>

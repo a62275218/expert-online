@@ -26,15 +26,15 @@ export default () => {
   const [certificateList, setCertificateList] = useState([]);
   const [courseList, setCourseList] = useState(context.user.classProcess);
   const [unitList, setUnitList] = useState([]);
-  title &&
-    Taro.setNavigationBarTitle({
-      title
-    });
+  
   const queryHistory = useQuery("api/public/api/v1/fetchHistoryPayment");
   const unitQuery = useQuery("api/public/api/v1/fetchUnitsByClassIds");
 
   useDidShow(() => {
-    console.log(context);
+    title &&
+    Taro.setNavigationBarTitle({
+      title
+    });
     const newList = [];
     const courseL = [];
     user.classProcess.forEach(item => {
@@ -46,11 +46,10 @@ export default () => {
           right: item.finishDate,
           func: generateCertificate
         });
-      item.ifFinish &&
+      //item.ifFinish &&
         courseL.push({
           id: item.classId,
           title: item.className,
-          right: item.finishDate,
           func: goUnitDetail,
           rightIcon: true
         });
@@ -217,7 +216,7 @@ export default () => {
   };
 
   return (
-    <View className="bg">
+    <View className="bg-noflex">
       <Image src={topImg} mode="widthFix" style="width:100%;"></Image>
       <View className="top-left">{title}</View>
       <View className="top-right">

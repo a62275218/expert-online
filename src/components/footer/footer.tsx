@@ -5,8 +5,9 @@ import './footer.scss'
 
 function Footer(props){
     const goWeb=()=>{
+        Taro.setStorageSync('link','https://info.weboostapp.com/')
         Taro.navigateTo({
-            url:"/pages/webview/webview?link=http://info.weboostapp.com/&title=WeBoost"
+            url:"/pages/webview/webview?link=https://info.weboostapp.com/&title=WeBoost"
         })
     }
     return (<View className={props.fixed?"wrapper fixed":'wrapper'} onClick={()=>goWeb()}>

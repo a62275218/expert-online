@@ -12,10 +12,20 @@ page {
   overflow:auto;
 }
 
+.bg-noflex{
+  height: 100%;
+  background: #f8f8f8;
+  font-family: 'PingFangSC-Medium';
+  flex-direction: column;
+  overflow:auto;
+  position:relative;
+}
+
 .center-flex {
   flex: 1;
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
 }
 

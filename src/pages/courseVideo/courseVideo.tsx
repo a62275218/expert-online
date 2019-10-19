@@ -26,6 +26,7 @@ export default () => {
   });
   const router = useRouter();
   const videoQuery = useQuery("api/public/api/v1/fetchUnitById");
+  const trialQuery = useQuery('api/public/api/v1/fetchTestUnit')
   const [unit, setUnit] = useState({});
   const [mustModalShow, setmustModalShow] = useState(false);
   const [finishModalShow, setFinishModalShow] = useState(false);
@@ -34,12 +35,18 @@ export default () => {
   const context = useContext(globalContext);
 
   useDidShow(() => {
-    videoQuery.request({
-      method: "POST",
-      data: {
-        id: router.params.id
-      }
-    });
+    if(router.params.trial){
+      trialQuery.request({
+        method:'GET'
+      })
+    }else{
+      videoQuery.request({
+        method: "POST",
+        data: {
+          id: router.params.id
+        }
+      });
+    } 
     Taro.request({
       url:'https://eot.weboostapp.com/flag.php',
       success:res=>{
@@ -48,11 +55,21 @@ export default () => {
     })
   });
   useEffect(() => {
+    if (!trialQuery.isLoading) {
+      setUnit(trialQuery.data[0]);
+      context.unit = trialQuery.data[0];
+      Taro.setStorageSync("quiz", trialQuery.data[0].quest);
+      Taro.setStorageSync("context", context);
+      Taro.setStorageSync("trial", true);
+    }
+  }, [trialQuery.data]);
+  useEffect(() => {
     if (!videoQuery.isLoading) {
       setUnit(videoQuery.data[0]);
       context.unit = videoQuery.data[0];
       Taro.setStorageSync("quiz", videoQuery.data[0].quest);
       Taro.setStorageSync("context", context);
+      Taro.removeStorageSync("trial");
     }
   }, [videoQuery.data]);
   const goQuiz = () => {
@@ -75,7 +92,9 @@ export default () => {
 
   const videoToQuiz = () => {
     setFinishModalShow(false);
-    validateStart();
+    if(!router.params.trial){
+      validateStart();
+    }
   };
 
   const compareDate = (newDate, oldDate) => {
@@ -149,7 +168,7 @@ export default () => {
         onClose={() => setmustModalShow(false)}
       ></Modal>
       <Image src={topImg} mode="widthFix" className="resized-img"></Image>
-      <View className="top-left">{context.course.className}</View>
+      <View className="top-left">{router.params.trial?'Test':context.course.className}</View>
       <View className="top-right">
         <View className="top-section active">
           观看视频
