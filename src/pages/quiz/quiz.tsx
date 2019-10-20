@@ -39,9 +39,9 @@ export default () => {
   } else {
     context = router.params.context ? JSON.parse(router.params.context) : {}
   }
-  if(Taro.getStorageSync('trial')){
+  if (Taro.getStorageSync('trial')) {
     trial = true
-  }else{
+  } else {
     trial = false
   }
   const [quiz] = useState(Taro.getStorageSync('quiz'));
@@ -443,10 +443,10 @@ export default () => {
         img={passImg}
         subtitle={`答对${correctCount}题!`}
         button={[
-          { name: trial ? "返回登陆" : "下载课程材料", func: backToDashboard, img: trial ? '' : downloadImg }
+          { name: "下载课程材料", func: trial?goVideo:backToDashboard, img: downloadImg }
         ]}
         bottom={!trial && {
-          text: "之后再下载，返回个人中心",
+          text: `之后再下载，返回${trial ? '注册' : '个人中心'}`,
           func: backToDashboard
         }}
       ></Modal>
@@ -461,7 +461,7 @@ export default () => {
           { name: "我的做题结果", func: showResult }
         ]}
         bottom={{
-          text: "不看了，返回个人中心",
+          text: `不看了，返回${trial?'注册':'个人中心'}`,
           func: backToDashboard
         }}
       ></Modal>
