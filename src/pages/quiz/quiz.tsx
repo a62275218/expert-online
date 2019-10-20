@@ -452,8 +452,8 @@ export default () => {
         button={[
           { name: "下载课程材料", func: trial ? goVideo : backToDashboard, img: downloadImg }
         ]}
-        bottom={!trial && {
-          text: `之后再下载，返回${trial ? '注册' : '个人中心'}`,
+        bottom={{
+          text: `之后再下载，返回${trial ? '首页注册' : '个人中心'}`,
           func: backToDashboard
         }}
       ></Modal>
@@ -468,7 +468,7 @@ export default () => {
           { name: "我的做题结果", func: showResult }
         ]}
         bottom={{
-          text: `不看了，返回${trial ? '注册' : '个人中心'}`,
+          text: `不看了，返回${trial ? '首页注册' : '个人中心'}`,
           func: backToDashboard
         }}
       ></Modal>
@@ -476,7 +476,7 @@ export default () => {
         show={quitModalShow}
         title="确认退出测验?"
         img={quitImg}
-        extratitle={'退出测验后，本次的做题内容将不会保存，并且失去本次做题机会唷！'}
+        extratitle={trial?'':'退出测验后，本次的做题内容将不会保存，并且失去本次做题机会唷！'}
         button={[
           { name: "返回继续做题", func: closeQuit },
           { name: "狠心退出", func: quitQuiz },

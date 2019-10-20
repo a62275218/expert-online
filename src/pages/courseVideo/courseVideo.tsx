@@ -29,7 +29,7 @@ export default () => {
   const trialQuery = useQuery('api/public/api/v1/fetchTestUnit')
   const [unit, setUnit] = useState({});
   const [mustModalShow, setmustModalShow] = useState(false);
-  const [finishModalShow, setFinishModalShow] = useState(false);
+  const [finishModalShow, setFinishModalShow] = useState(true);
   const [showLimitModal, setLimitModalShow] = useState(false);
   const [videoShow, setVideoShow] = useState(0)
   const context = useContext(globalContext);
@@ -191,7 +191,8 @@ export default () => {
         onClose={() => setFinishModalShow(false)}
         bottom={{
           text: `我想再看一次视频`,
-          func: reWatch
+          func: reWatch,
+          img:download
         }}
       ></Modal>
       <Modal
@@ -250,6 +251,7 @@ export default () => {
               {item.name}
             </View>
           ))}
+          {!router.params.trial && <View className="error">{`今天剩余答题次数:${remain}次`}</View>}
         <View
           className="button"
           style="margin:20px 0;"
