@@ -30,10 +30,10 @@ export default (uri: any, config?: any, loading?: any) => {
                         // })
                     }
                 } else {
-                    Taro.showToast({
-                        title: '请求失败',
-                        icon: 'none'
-                    })
+                    // Taro.showToast({
+                    //     title: '请求失败',
+                    //     icon: 'none'
+                    // })
                 }
             },
             fail: err => {
@@ -66,7 +66,6 @@ export const useQuery = (uri: any, loading?: any) => {
                     setData(res.data)
                     return
                 }
-                console.log(res)
                 if(res.code){
                     setData(res.data || res)
                     return
@@ -83,10 +82,10 @@ export const useQuery = (uri: any, loading?: any) => {
                     }
                 } else {
                     setData(res)
-                    Taro.showToast({
-                        title: '请求失败',
-                        icon: 'none'
-                    })
+                    // Taro.showToast({
+                    //     title: '请求失败',
+                    //     icon: 'none'
+                    // })
                 }
             },
             fail: err => {

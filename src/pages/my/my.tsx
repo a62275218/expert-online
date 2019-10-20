@@ -26,15 +26,15 @@ export default () => {
   const [certificateList, setCertificateList] = useState([]);
   const [courseList, setCourseList] = useState(context.user.classProcess);
   const [unitList, setUnitList] = useState([]);
-  
+
   const queryHistory = useQuery("api/public/api/v1/fetchHistoryPayment");
   const unitQuery = useQuery("api/public/api/v1/fetchUnitsByClassIds");
 
   useDidShow(() => {
     title &&
-    Taro.setNavigationBarTitle({
-      title
-    });
+      Taro.setNavigationBarTitle({
+        title
+      });
     const newList = [];
     const courseL = [];
     user.classProcess.forEach(item => {
@@ -47,12 +47,12 @@ export default () => {
           func: generateCertificate
         });
       //item.ifFinish &&
-        courseL.push({
-          id: item.classId,
-          title: item.className,
-          func: goUnitDetail,
-          rightIcon: true
-        });
+      courseL.push({
+        id: item.classId,
+        title: item.className,
+        func: goUnitDetail,
+        rightIcon: true
+      });
     });
     console.log(newList);
     setCertificateList(newList);
@@ -190,9 +190,7 @@ export default () => {
       list[idx].active = true;
       return list;
     });
-    setTimeout(() => {
-      row.func(row);
-    }, 500)
+    row.func(row);
     // Taro.navigateTo({
     //   url: '/pages/my/my'
     // })

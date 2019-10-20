@@ -1,4 +1,4 @@
-import Taro, { Component, useState, useEffect, useContext,useDidShow } from "@tarojs/taro";
+import Taro, { Component, useState, useEffect, useContext, useDidShow } from "@tarojs/taro";
 import { View, Image, Input } from "@tarojs/components";
 import topImg from "../../images/B-6-BG.png";
 import titleImg from "../../images/EOT-Clear.png";
@@ -36,14 +36,18 @@ class Login extends Component {
       const user = Taro.getStorageSync('user');
       if (user) {
         console.log('已登录')
+        const today = new Date();
+        context.user = user
+        if (user.endMemberTime * 1000 < Date.parse(today)) {
+          return
+        }
         Taro.reLaunch({
           url: "/pages/dashboard/dashboard"
         });
-        context.user = user
       }
     })
 
-    const goTrial = ()=>{
+    const goTrial = () => {
       Taro.navigateTo({
         url: `/pages/courseVideo/courseVideo?trial=true`
       })
@@ -97,6 +101,8 @@ class Login extends Component {
           Taro.setStorageSync('user', userInfo)
           context.user = userInfo;
           const today = new Date();
+
+          //userInfo.endMemberTime = 0
           if (userInfo.endMemberTime * 1000 < Date.parse(today)) {
             setexpireModal(true)
             return
@@ -167,7 +173,7 @@ class Login extends Component {
               还不是会员吗？按这里来购买会员唷
             </View>
           </View>
-          <View className="trial">先试用一下吗? 点击前往免费试用!<View className="button" onClick={()=>goTrial()}>免费试用</View></View>
+          <View className="trial">先试用一下吗? 点击前往免费试用!<View className="button" onClick={() => goTrial()}>免费试用</View></View>
         </View>
         <View style="margin-bottom:-20px;">
           <Footer></Footer>

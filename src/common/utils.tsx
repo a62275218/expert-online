@@ -2,11 +2,11 @@ import Taro from '@tarojs/taro'
 
 export const downloadFile = (url, type?) => {
     Taro.getSetting({
-        success:res=>{
+        success: res => {
             console.log(res)
-            if(res.authSetting['scope.writePhotosAlbum']){
+            if (res.authSetting['scope.writePhotosAlbum']) {
                 console.log('已授权')
-            }else if(res.authSetting['scope.writePhotosAlbum'] === false){
+            } else if (res.authSetting['scope.writePhotosAlbum'] === false) {
                 console.log('未授权')
                 Taro.openSetting()
             }
@@ -27,14 +27,14 @@ export const downloadFile = (url, type?) => {
                             title: '下载文件成功'
                         })
                     },
-                    fail:()=>{
+                    fail: () => {
                         Taro.showToast({
                             title: '下载文件失败',
                             icon: 'none'
                         })
                     }
                 })
-            }else if(type == 'image'){
+            } else if (type == 'image') {
                 Taro.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: res => {
@@ -42,7 +42,7 @@ export const downloadFile = (url, type?) => {
                             title: '下载文件成功'
                         })
                     },
-                    fail:(err)=>{
+                    fail: (err) => {
                         console.log(err)
                         Taro.showToast({
                             title: '下载文件失败',
@@ -58,7 +58,7 @@ export const downloadFile = (url, type?) => {
                             title: '下载文件成功'
                         })
                     },
-                    fail:()=>{
+                    fail: () => {
                         Taro.showToast({
                             title: '下载文件失败',
                             icon: 'none'
@@ -76,8 +76,8 @@ export const downloadFile = (url, type?) => {
     })
 }
 
-export const generateDate = (inputDate)=>{
-    const monthMap =[
+export const generateDate = (inputDate) => {
+    const monthMap = [
         'Jan',
         'Feb',
         'Mar',
@@ -93,4 +93,18 @@ export const generateDate = (inputDate)=>{
     ]
     const date = new Date(inputDate)
     return `${date.getDate()}/${monthMap[date.getMonth()]}/${date.getFullYear()}`
+}
+
+export const debounce = (func, time) => {
+    let timeout;
+    return function () {
+        let context = this;
+        let args = arguments;
+
+        if (timeout) clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            func.apply(context, args)
+        }, time);
+    }
 }

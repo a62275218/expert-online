@@ -13,6 +13,7 @@ import botImg from "../../images/C-BG2.png";
 import globalContext from "../../context";
 
 import { useQuery } from "../../common/request";
+import { debounce } from '../../common/utils'
 
 import "./dashboard.scss";
 
@@ -74,9 +75,11 @@ const Dashboard = () => {
       setUser(userQuery.data[0]);
       context.user = userQuery.data[0];
       const today = new Date();
+      Taro.setStorageSync('user', userQuery.data[0])
       if (userQuery.data[0].endMemberTime * 1000 < Date.parse(today)) {
+        console.log('expire')
         Taro.reLaunch({
-          url:'/pages/login/login'
+          url: '/pages/login/login'
         })
         return
       }
@@ -104,18 +107,16 @@ const Dashboard = () => {
       list[index].list[idx].active = true;
       return list;
     });
-    setTimeout(() => {
-      if (item.label == "登出") {
-        Taro.removeStorageSync("user");
-        Taro.reLaunch({
-          url: item.url
-        });
-        return;
-      }
-      Taro.navigateTo({
-        url: `${item.url}?title=${item.label}`
+    if (item.label == "登出") {
+      Taro.removeStorageSync("user");
+      Taro.reLaunch({
+        url: item.url
       });
-    }, 500);
+      return;
+    }
+    Taro.navigateTo({
+      url: `${item.url}?title=${item.label}`
+    });
   };
   return (
     <View className="background">

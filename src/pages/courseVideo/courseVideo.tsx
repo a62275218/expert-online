@@ -31,28 +31,48 @@ export default () => {
   const [mustModalShow, setmustModalShow] = useState(false);
   const [finishModalShow, setFinishModalShow] = useState(false);
   const [showLimitModal, setLimitModalShow] = useState(false);
-  const [videoShow,setVideoShow] = useState(0)
+  const [videoShow, setVideoShow] = useState(0)
   const context = useContext(globalContext);
+  const [remain, setRemain] = useState(3)
 
   useDidShow(() => {
-    if(router.params.trial){
+    if (router.params.trial) {
       trialQuery.request({
-        method:'GET'
+        method: 'GET'
       })
-    }else{
+    } else {
       videoQuery.request({
         method: "POST",
         data: {
           id: router.params.id
         }
       });
-    } 
+    }
     Taro.request({
-      url:'https://eot.weboostapp.com/flag.php',
-      success:res=>{
+      url: 'https://eot.weboostapp.com/flag.php',
+      success: res => {
         setVideoShow(res.data)
       }
     })
+    if (!router.params.trial) {
+      const date = new Date();
+      const storedDate = new Date(Taro.getStorageSync("date")) || date;
+      const dateDiff = compareDate(date, storedDate);
+
+      let attemps = Taro.getStorageSync("attempts") || [];
+      if (!dateDiff) {
+        attemps.forEach(item => {
+          if (
+            item.user == context.user.id &&
+            item.class == context.course.classId &&
+            item.unit == router.params.id
+          ) {
+            setRemain(3 - item.times)
+            console.log("做过题目了");
+          }
+        });
+      }
+    }
   });
   useEffect(() => {
     if (!trialQuery.isLoading) {
@@ -91,8 +111,9 @@ export default () => {
   };
 
   const videoToQuiz = () => {
+    console.log(router.params.trial)
     setFinishModalShow(false);
-    if(!router.params.trial){
+    if (!router.params.trial) {
       validateStart();
     }
   };
@@ -117,30 +138,39 @@ export default () => {
   };
 
   const validateStart = () => {
-    const date = new Date();
-    const storedDate = new Date(Taro.getStorageSync("date")) || date;
-    const dateDiff = compareDate(date, storedDate);
-    let attemps = Taro.getStorageSync("attempts") || [];
-
-    let limit = false;
-    attemps.forEach(item => {
-      if (
-        item.user == context.user.id &&
-        item.class == context.course.classId &&
-        item.unit == unit.id
-      ) {
-        console.log("做过题目了");
-        if (item.times >= 3) {
-          limit = true;
+    if(!router.params.trial){
+      const date = new Date();
+      const storedDate = new Date(Taro.getStorageSync("date")) || date;
+      const dateDiff = compareDate(date, storedDate);
+      let attemps = Taro.getStorageSync("attempts") || [];
+  
+      let limit = false;
+      attemps.forEach(item => {
+        if (
+          item.user == context.user.id &&
+          item.class == context.course.classId &&
+          item.unit == unit.id
+        ) {
+          console.log("做过题目了");
+          if (item.times >= 3) {
+            limit = true;
+          }
         }
+      });
+      if (limit && !dateDiff) {
+        setLimitModalShow(true);
+        return;
       }
-    });
-    if (limit && !dateDiff) {
-      setLimitModalShow(true);
-      return;
     }
     setmustModalShow(true);
   };
+
+  const reWatch = () => {
+    console.log(router)
+    Taro.redirectTo({
+      url: `/pages/courseVideo/courseVideo?${router.params.id ? `id=${router.params.id}` : 'trial=true'}`
+    })
+  }
   return (
     <View>
       <Modal
@@ -156,19 +186,25 @@ export default () => {
         title="视频已结束"
         img={finishImg}
         subtitle={`你已完成视频学习，马上前往做题测验！`}
+        warntitle={router.params.trial ? '' : `今天剩余答题次数:${remain}次`}
         button={[{ name: "开始做题", func: videoToQuiz }]}
         onClose={() => setFinishModalShow(false)}
+        bottom={{
+          text: `我想再看一次视频`,
+          func: reWatch
+        }}
       ></Modal>
       <Modal
         show={mustModalShow}
         title="做题须知"
         img={mustImg}
-        subtitle={`测验有7题,答对6题才算过关\r\n测验时间:20分钟`}
+        subtitle={`测验有7题,答对6题才算过关`}
+        extratitle={'测验时间:20分钟'}
         button={[{ name: "知道了", func: goQuiz }]}
         onClose={() => setmustModalShow(false)}
       ></Modal>
       <Image src={topImg} mode="widthFix" className="resized-img"></Image>
-      <View className="top-left">{router.params.trial?'Test':context.course.className}</View>
+      <View className="top-left">{router.params.trial ? 'Test' : context.course.className}</View>
       <View className="top-right">
         <View className="top-section active">
           观看视频
@@ -196,7 +232,7 @@ export default () => {
           id='video'
           loop={false}
           muted={false}
-          onEnded={()=>setFinishModalShow(true)}
+          onEnded={() => setFinishModalShow(true)}
         />
       </View>
       <View className="bot-container">

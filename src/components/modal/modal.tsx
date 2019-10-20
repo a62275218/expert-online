@@ -44,6 +44,8 @@ function Modal(props) {
               className="center-img"
             ></Image>
             <View className="subtitle">{props.subtitle}</View>
+            <View className="subtitle warn">{props.warntitle}</View>
+            <View className="subtitle extra">{props.extratitle}</View>
             {button.map((item, idx) => (
               <View key={item.name} className={!item.active && button.length > 1 ? "button white-btn" : "button"} onClick={() => handleClick(idx, item.func)}>
                 <Image className="icon-img" src={item.active ? item.activeImg : item.img}></Image>
