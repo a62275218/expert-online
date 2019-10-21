@@ -52,7 +52,7 @@ function Modal(props) {
                 {item.name}
               </View>
             ))}
-            <View className="bottom-txt" onClick={() => props.bottom.func()}>{props.bottom.text}<Image className="bot-img" src={props.bottom.img}></Image></View>
+            <View className="bottom-txt" onClick={() => props.bottom.func()}>{props.bottom.text}<Image className="bot-img" mode="widthFix" src={props.bottom.img}></Image></View>
           </View>
           {Remainder}
         </View>

@@ -9,6 +9,7 @@ import { View, Image, Video } from "@tarojs/components";
 import topImg from "../../images/Group.png";
 import nextImg from "../../images/white-next-icon.png";
 import download from "../../images/download-b.png";
+import reWatchImg from "../../images/re_video.png";
 import globalContext from "../../context";
 
 import { useQuery } from "../../common/request";
@@ -29,7 +30,7 @@ export default () => {
   const trialQuery = useQuery('api/public/api/v1/fetchTestUnit')
   const [unit, setUnit] = useState({});
   const [mustModalShow, setmustModalShow] = useState(false);
-  const [finishModalShow, setFinishModalShow] = useState(true);
+  const [finishModalShow, setFinishModalShow] = useState(false);
   const [showLimitModal, setLimitModalShow] = useState(false);
   const [videoShow, setVideoShow] = useState(0)
   const context = useContext(globalContext);
@@ -192,7 +193,7 @@ export default () => {
         bottom={{
           text: `我想再看一次视频`,
           func: reWatch,
-          img:download
+          img:reWatchImg
         }}
       ></Modal>
       <Modal
