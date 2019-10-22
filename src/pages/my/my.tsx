@@ -123,11 +123,11 @@ export default () => {
       list: certificateList
     },
     课程材料: {
-      subtitle: "上过的课程",
+      subtitle: "所有的课程",
       list: courseList
     },
     材料列表: {
-      subtitle: "上过的课程",
+      subtitle: "所有的课程",
       list: unitList
     },
     账号设定: {

@@ -141,6 +141,9 @@ const Register = () => {
           <View className="sm-text" style="padding:10px 0">
             * 所有登入信息将依照此邮箱
           </View>
+          <View className="error" style={error ? "text-align:right;" : "text-align:right;visibility:hidden"}>
+            {error}
+          </View>
           <View className="input">
             <View>密码</View>
             <Image
@@ -173,9 +176,7 @@ const Register = () => {
           </View>
           <View></View>
           <View className="error" style={rePswErr ? '' : 'visibility:hidden'}>两次输入密码不一致</View>
-          <View className="error" style={error ? "text-align:center;" : "text-align:center;visibility:hidden"}>
-            {error}
-          </View>
+          
           <View className="button" onClick={() => validateAndGo()}>确认</View>
         </View>
       </View>
