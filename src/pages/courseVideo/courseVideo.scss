@@ -61,6 +61,7 @@
     word-wrap: break-word;
     image {
       width: 50px;
+      min-width: 50px;
       height: 50px;
       margin-right: 20px;
     }
@@ -68,7 +69,7 @@
 }
 
 .error {
-  text-align:center;
+  text-align: center;
   font-size: 26px;
   text-align: center;
   color: #d0021b;

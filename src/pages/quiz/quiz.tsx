@@ -49,6 +49,8 @@ export default () => {
   const [options, setOptions] = useState([]);
   const [quitModalShow, setQuitModalShow] = useState(false)
   const [count, setCount] = useState(20 * 60);
+  const [leftActive,setLeftActive] = useState(false)
+  const [rightActive,setRightActive] = useState(false)
   //const [trial, setTrial] = useState('');
   const timer = useRef({})
   const [answerMap, setAnserMap] = useState(
@@ -75,6 +77,8 @@ export default () => {
   }, [currentIndex]);
 
   useDidShow(() => {
+    setLeftActive(false)
+    setRightActive(false)
     const localTrial = Taro.getStorageSync('trial')
     setCount(Taro.getStorageSync('timer') || (20 * 60));
     if (!router.params.showRes) {
@@ -329,6 +333,7 @@ export default () => {
   };
 
   const goVideo = () => {
+    setLeftActive(true)
     Taro.reLaunch({
       url: trial ? '/pages/courseVideo/courseVideo?trial=true' : `/pages/courseVideo/courseVideo?id=${context.unit.id}`
     });
@@ -339,6 +344,7 @@ export default () => {
   }
 
   const redo = async () => {
+    setRightActive(true)
     if (trial) {
       Taro.redirectTo({
         url: `/pages/quiz/quiz?context=${JSON.stringify(context)}`
@@ -427,8 +433,25 @@ export default () => {
         </View>
       ))
     }
-    <View className="button" style="margin:0 20px;width:auto;" onClick={() => backToDashboard()}>
-      返回个人中心
+    <View>
+      <View className="action">
+        <View
+          className={leftActive?"button":"button prev"}
+          onClick={() => goVideo()}
+          style={{ margin: '20px 10px 20px 20px',display:'flex',alignItems:'center' }}
+        >
+          <Image style={{ width: '20px',margin:'0 16px' }} mode="widthFix" src={leftActive?replay:replayBlue}></Image>
+          <View>看视频</View>
+        </View>
+        <View
+          className={rightActive?"button":"button prev"}
+          onClick={() => redo()}
+          style={{ margin: '20px 20px 20px 10px',display:'flex',alignItems:'center' }}
+        >
+          <View style={{flex:'1'}}>去做题</View>
+        </View>
+      </View>
+      <View className="bot-text" onClick={() => backToDashboard()}>不看了,先返回个人中心</View>
     </View>
     <View style="height:40px"></View>
   </View>
@@ -476,7 +499,7 @@ export default () => {
         show={quitModalShow}
         title="确认退出测验?"
         img={quitImg}
-        extratitle={trial?'':'退出测验后，本次的做题内容将不会保存，并且失去本次做题机会唷！'}
+        extratitle={trial ? '' : '退出测验后，本次的做题内容将不会保存，并且失去本次做题机会唷！'}
         button={[
           { name: "返回继续做题", func: closeQuit },
           { name: "狠心退出", func: quitQuiz },
@@ -577,12 +600,6 @@ export default () => {
             <View className="num">
               {currentIndex + 1}/{quiz.length}
             </View>
-            {
-              showRes && currentIndex + 1 == quiz.length &&
-              <View className="button" onClick={() => backToDashboard()}>
-                返回个人中心
-            </View>
-            }
             {currentIndex + 1 == quiz.length ? (
               !showRes && (
                 <View className="button" onClick={() => submit()}>

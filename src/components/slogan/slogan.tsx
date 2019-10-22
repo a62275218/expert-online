@@ -14,7 +14,7 @@ const Slogan = () => {
         <View className="year">年</View>
       </View>
       <View className="title">
-        $ 29.9 <Text>USD</Text>
+        $ 299 <Text>USD</Text>
       </View>
       <View className="feature-row">
         <View className="feature-row-expand">

@@ -35,7 +35,7 @@ const Redeem = () => {
         },
         method: 'POST',
         data: {
-          amount: 2990,
+          amount: 29900,
           currency: 'USD',
           reference: `${stamp}s14`,
           ipn_url: 'http://eot.weboostapp.com/api/public/api/v1/ipnCallBackSec',
@@ -129,7 +129,7 @@ const Redeem = () => {
         <View className="line"></View>
         <View className="flex-between">
           <View>需付金额：</View>
-          <View>$29.9</View>
+          <View>$299</View>
         </View>
         <View className="line"></View>
         <View className="button" onClick={() => redeem()}>立即购买</View>

@@ -74,27 +74,33 @@
       }
     }
   }
+}
 
-  .action {
-    display: flex;
-    align-items: center;
-    color: #2f8ccb;
-    font-size: 40px;
+.action {
+  display: flex;
+  align-items: center;
+  color: #2f8ccb;
+  font-size: 40px;
 
-    .num {
-      padding: 0 20px;
-    }
-
-    .button {
-      margin: 20px 0;
-    }
-
-    .prev {
-      background: #fff;
-      color: #2f8ccb;
-      border: 1px solid #2f8ccb;
-    }
+  .num {
+    padding: 0 20px;
   }
+
+  .button {
+    margin: 20px 0;
+  }
+
+  .prev {
+    background: #fff;
+    color: #2f8ccb;
+    border: 1px solid #2f8ccb;
+  }
+}
+
+.bot-text{
+  color: #2f8ccb;
+  font-size:30px;
+  text-align: center;
 }
 
 .resImg {
