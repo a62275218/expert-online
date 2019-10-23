@@ -52,7 +52,13 @@ export default () => {
     Taro.request({
       url: 'https://eot.weboostapp.com/flag.php',
       success: res => {
-        setVideoShow(res.data)
+        setVideoShow(() => {
+          if (res.data == 1) {
+            return false
+          } else {
+            return true
+          }
+        })
       }
     })
     if (!router.params.trial) {
@@ -139,12 +145,12 @@ export default () => {
   };
 
   const validateStart = () => {
-    if(!router.params.trial){
+    if (!router.params.trial) {
       const date = new Date();
       const storedDate = new Date(Taro.getStorageSync("date")) || date;
       const dateDiff = compareDate(date, storedDate);
       let attemps = Taro.getStorageSync("attempts") || [];
-  
+
       let limit = false;
       attemps.forEach(item => {
         if (
@@ -193,7 +199,7 @@ export default () => {
         bottom={{
           text: `我想再看一次视频`,
           func: reWatch,
-          img:reWatchImg
+          img: reWatchImg
         }}
       ></Modal>
       <Modal
@@ -225,17 +231,18 @@ export default () => {
       </View>
       <View className="section-title">{unit.videoName}</View>
       <View className="video-container">
-        <Video
+        {!finishModalShow && !showLimitModal && !mustModalShow && videoShow && <Video
           className="video"
           src={unit.videoUrl}
           controls={true}
           autoplay={false}
           initialTime={0}
           id='video'
+          style={finishModalShow ? 'visibility:hidden' : ''}
           loop={false}
           muted={false}
           onEnded={() => setFinishModalShow(true)}
-        />
+        />}
       </View>
       <View className="bot-container">
         <View className="sub-title">视频介绍</View>
@@ -252,7 +259,7 @@ export default () => {
               {item.name}
             </View>
           ))}
-          {!router.params.trial && <View className="error">{`今天剩余答题次数:${remain}次`}</View>}
+        {!router.params.trial && <View className="error">{`今天剩余答题次数:${remain}次`}</View>}
         <View
           className="button"
           style="margin:20px 0;"

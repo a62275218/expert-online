@@ -18,7 +18,7 @@ const Help = (props) => {
   const emailUs = () => {
     setType('email')
     Taro.setClipboardData({
-      data: 'info@expertonlinetraining.com',
+      data: 'eotteam@outook.com',
       success: res => {
         Taro.showToast({
           title:'email已复制'

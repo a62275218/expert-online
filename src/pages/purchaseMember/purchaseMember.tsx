@@ -31,7 +31,7 @@ const PurchaseMember = (props) => {
                 <View style={type === 'company' ? '' : 'visibility:hidden'}>
                     <View className="sub-title" style="padding-top:20px">如您的企业机构需要订阅的账户超过100位使用者，</View>
                     <View className="sub-title">欢迎与我们联系：</View>
-                    <View className="sub-title" style="padding-top:20px">info@expertonlinetraining.com.</View>
+                    <View className="sub-title" style="padding-top:20px">eotteam@outook.com</View>
                 </View>
             </View>
             <Footer fixed></Footer>

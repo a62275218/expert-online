@@ -70,15 +70,26 @@
     .feature {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: space-around;
       box-sizing: border-box;
       width: 190px;
       height: 190px;
-      padding: 20px;
+      padding: 20px 0;
+      font-size:30px;
 
       .num {
         font-size: 70px;
         font-weight: 450;
+        position: relative;
+        .plus{
+          position: absolute;
+          font-size:40px;
+        }
+        .hrs{
+          bottom:0;
+          font-size:30px;
+          margin-left:10px;
+        }
       }
     }
   }
@@ -86,4 +97,10 @@
 
 .desc-row {
   padding: 10px 0;
+}
+
+.text{
+  font-size:24px;
+  padding:10px 0;
+  color:black;
 }

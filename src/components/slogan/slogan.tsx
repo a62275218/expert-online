@@ -16,19 +16,25 @@ const Slogan = () => {
       <View className="title">
         $ 299 <Text>USD</Text>
       </View>
+      <View className="text">
+        Your subscription to Expert Online Training gives you access to all videos, quizzes, and handouts.
+      </View>
+      <View className="text">
+        Individuals may purchase a yearly subscription for $299. If you work for a summer camp or summer school, ask your employer to add you to their organizational subscription to EOT. Organizations, such as summer camps and summer schools, may purchase a yearly subscription for $299, which includes an administrative dashboard and 10 staff accounts to get you started. Organizations can purchase additional staff account for just $29 apiece.
+      </View>
       <View className="feature-row">
         <View className="feature-row-expand">
           <View className="feature button">
-            <View className="num">4</View>
+            <View className="num">4<Text className="plus">+</Text></View>
             <View>Courses</View>
           </View>
           <View className="feature button">
-            <View className="num">150</View>
+            <View className="num" style={{marginLeft:'-10px'}}>110<Text className="plus">+</Text></View>
             <View>Videos</View>
           </View>
           <View className="feature button">
-            <View className="num">20</View>
-            <View>Hours</View>
+            <View className="num">22<Text className="plus">+</Text><Text className="hrs">hrs</Text></View>
+            <View>Content</View>
           </View>
         </View>
       </View>
