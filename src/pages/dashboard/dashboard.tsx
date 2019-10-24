@@ -13,7 +13,6 @@ import botImg from "../../images/C-BG2.png";
 import globalContext from "../../context";
 
 import { useQuery } from "../../common/request";
-import { debounce } from '../../common/utils'
 
 import "./dashboard.scss";
 
@@ -51,6 +50,16 @@ const Dashboard = () => {
     Taro.setNavigationBarTitle({
       title: "个人中心"
     });
+    Taro.request({
+      url: 'https://eot.weboostapp.com/flag.php',
+      success: res => {
+        if (res.data == 1) {
+          context.show=false
+        } else {
+          context.show = true
+        }
+      }
+    })
     setUser(Taro.getStorageSync("user"))
     setList(list => {
       list.forEach(item => {

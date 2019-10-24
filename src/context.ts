@@ -4,7 +4,8 @@ export let state = {
     user:null,
     course:null,
     unit:null,
-    quiz:null
+    quiz:null,
+    show:true
 }
 
 export default Taro.createContext(state);

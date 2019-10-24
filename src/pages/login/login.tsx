@@ -29,6 +29,7 @@ class Login extends Component {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [show,setShow] = useState(true)
 
     const context = useContext(globalContext)
 
@@ -45,6 +46,18 @@ class Login extends Component {
           url: "/pages/dashboard/dashboard"
         });
       }
+      Taro.request({
+        url: 'https://eot.weboostapp.com/flag.php',
+        success: res => {
+          setShow(() => {
+            if (res.data == 1) {
+              return false
+            } else {
+              return true
+            }
+          })
+        }
+      })
     })
 
     const goTrial = () => {
@@ -169,9 +182,9 @@ class Login extends Component {
             <View className="button" onClick={() => login()}>
               登入
             </View>
-            <View className="bot-text" onClick={() => goPurchase()}>
+            {show && <View className="bot-text" onClick={() => goPurchase()}>
               还不是会员吗？按这里来购买会员唷
-            </View>
+            </View>}
           </View>
           <View className="trial">先试用一下吗? 点击前往免费试用!<View className="button" onClick={() => goTrial()}>免费试用</View></View>
         </View>

@@ -21,7 +21,7 @@ import "./my.scss";
 export default () => {
   const router = useRouter();
   const context = useContext(globalContext);
-  const { user } = context;
+  const { user,show } = context;
   const { title } = router.params;
   const [certificateList, setCertificateList] = useState([]);
   const [courseList, setCourseList] = useState(context.user.classProcess);
@@ -228,9 +228,9 @@ export default () => {
             <View className="expire-title">Full PACK Subscriptions</View>
             <View className="expire-sec">
               <View>有效期至 {generateDate(user.endMemberTime * 1000)}</View>
-              <View className="button redeem" onClick={() => goRedeem()}>
+              {show &&<View className="button redeem" onClick={() => goRedeem()}>
                 续约我的会员
-              </View>
+              </View>}
             </View>
           </View>
         </View>
